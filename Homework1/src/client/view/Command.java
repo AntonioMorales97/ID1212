@@ -6,5 +6,6 @@ public enum Command {
 	DISCONNECT,
 	START,
 	HELP,
+	QUIT,
 	COMMAND_ERROR
 }
