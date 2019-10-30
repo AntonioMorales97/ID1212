@@ -7,5 +7,6 @@ public enum Command {
 	START,
 	HELP,
 	QUIT,
+	INFO,
 	COMMAND_ERROR
 }

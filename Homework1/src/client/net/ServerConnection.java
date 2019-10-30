@@ -8,11 +8,13 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import common.Receiver;
+import common.Sender;
 
 public class ServerConnection {
 	private static final int TIMEOUT_TEN_MIN = 600000;
 	private static final int TIMEOUT_TWENTY_SEC = 20000;
 	private final Receiver receiver = new Receiver();
+	private final Sender sender = new Sender();
 	private Socket socket;
 	private DataOutputStream toServer;
 	private DataInputStream fromServer;
@@ -45,6 +47,17 @@ public class ServerConnection {
 			System.exit(1);
 		}
 		
+	}
+	
+	public void sendMessage(String message) {
+		if(!this.isConnected) {
+			return;
+		}
+		sender.sendMessageAsBytes(message, this.toServer);
+	}
+	
+	public boolean isConnected() {
+		return this.isConnected;
 	}
 	
 	private class ServerListener implements Runnable {
