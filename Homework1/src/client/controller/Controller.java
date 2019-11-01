@@ -57,6 +57,7 @@ public class Controller {
 	 * @param message The message to be sent to the server
 	 * @throws Throwable if unable to send message.
 	 */
+	/*
 	public void sendMessage(String message) throws Throwable {
 		if(!this.connection.isConnected()) {
 			throw new Throwable("Please connect first...");
@@ -64,5 +65,33 @@ public class Controller {
 		CompletableFuture.runAsync(() -> {
 			this.connection.sendMessage(message);
 		});
+	}
+	*/
+	
+	public void startGame() throws Throwable {
+		if(!this.connection.isConnected()) {
+			throw new Throwable("Please connect first...");
+		}
+		CompletableFuture.runAsync(() -> {
+			this.connection.sendStartGame();
+		});	
+	}
+	
+	public void sendGuess(String guess) throws Throwable {
+		if(!this.connection.isConnected()) {
+			throw new Throwable("Please connect first...");
+		}
+		CompletableFuture.runAsync(() -> {
+			this.connection.sendGuess(guess);
+		});	
+	}
+	
+	public void login(String username, String password) throws Throwable {
+		if(!this.connection.isConnected()) {
+			throw new Throwable("Please connect first...");
+		}
+		CompletableFuture.runAsync(() -> {
+			this.connection.sendLogin(username, password);
+		});	
 	}
 }

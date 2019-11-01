@@ -8,5 +8,6 @@ public enum Command {
 	HELP,
 	QUIT,
 	INFO,
+	LOGIN,
 	COMMAND_ERROR
 }

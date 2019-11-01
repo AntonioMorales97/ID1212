@@ -2,6 +2,8 @@ package server.model;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import common.Constants;
 //import java.util.HashSet;
 
 /**
@@ -33,7 +35,7 @@ public class HangmanGame {
 			} else {
 				this.score--;
 			}
-			return printStart();
+			return gameToClient();
 		} catch(IOException e) {
 			e.printStackTrace();
 			return "Failed to read word file in server side";
@@ -58,10 +60,18 @@ public class HangmanGame {
 	 */
 	public String guess(String message) {
 		if(this.attemptsLeft == 0) {
-			return "Start a new game!";
+			StringBuilder sb = new StringBuilder();
+			sb.append("Start a new game! ");
+			appendGameStatus(sb);
+			return sb.toString();
 		}
-		if(message == null)
-			return "Please enter a letter or a word to guess!";
+		if(message == null) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Enter a letter or a word! ");
+			appendGameStatus(sb);
+			return sb.toString();
+		}
+			
 		boolean successGuess = false;
 		if(message.length() == 1) {
 			successGuess = guessLetter(message.charAt(0));
@@ -69,30 +79,22 @@ public class HangmanGame {
 			 successGuess = guessWord(message);
 		}
 		
-		StringBuilder sb = new StringBuilder();
 		if(!successGuess) {
 			this.attemptsLeft--;
 			if(gameOver()) {
 				this.score--;
 				this.decrementNextScore = false;
-				sb.append("Game Over: ");
-				appendCorrectLetters(sb);
-				appendGameStatus(sb);
-				return sb.toString();
+				return gameOverToClient();
 			}
 		}
-		
-		appendGuessedLetters(sb);
 		
 		if(gameIsWon()) {
 			this.attemptsLeft = 0;
 			this.score++;
-			this.decrementNextScore = false;
-			appendGameStatus(sb);	
-		} else {
-			appendGameStatus(sb);
+			this.decrementNextScore = false;	
 		}
-		return sb.toString();
+		
+		return gameToClient();
 	}
 
 	private void setUpGame() throws IOException {
@@ -143,17 +145,22 @@ public class HangmanGame {
 		}
 	}
 
-	private String printStart() {
+	private String gameToClient() {
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < this.word.length; i++) {
-			sb.append("_ ");
-		}
+		appendGuessedLetters(sb);
 		appendGameStatus(sb);
 		return sb.toString();
 	}
-
+	
+	private String gameOverToClient() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("GameOver: ");
+		appendCorrectLetters(sb);
+		appendGameStatus(sb);
+		return sb.toString();
+	}
+	
 	private void appendGameStatus(StringBuilder sb) {
-		sb.append("Remaining attempts: " + this.attemptsLeft);
-		sb.append(" Score: " + this.score);
+		sb.append(Constants.MSG_BODY_DELIMETER+this.attemptsLeft+Constants.MSG_BODY_DELIMETER+this.score);
 	}
 }

@@ -1,0 +1,12 @@
+package common;
+
+public enum MsgType {
+	GUESS,
+	START,
+	DISCONNECT,
+	LOGIN,
+	GAME_RESPOND,
+	LOGIN_SUCCESS,
+	LOGIN_FAIL,
+	INVALID_REQUEST
+}

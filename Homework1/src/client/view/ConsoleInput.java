@@ -6,6 +6,13 @@ import client.controller.Controller;
 import client.net.OutputHandler;
 import common.Constants;
 
+/**
+ * This class handles the client application, i.e connection to the
+ * server and console input with different commands.
+ * 
+ * @author Antonio
+ *
+ */
 public class ConsoleInput implements Runnable{
 	private static final String PROMPT = "$ ";
 	private final Scanner console = new Scanner(System.in);
@@ -16,11 +23,20 @@ public class ConsoleInput implements Runnable{
 	private String host;
 	private int port;
 
+	/**
+	 * Creates a <code>ConsoleInput</code> instance with given parameters
+	 * @param host The host to connect to
+	 * @param port The port where the host is running its service
+	 */
 	public ConsoleInput(String host, int port) {
 		this.host = host;
 		this.port = port;
 	}
 
+	/**
+	 * Sets the console input to active and creates a thread
+	 * that will manage user input.
+	 */
 	public void start() {
 		if(this.active) {
 			return;
@@ -29,6 +45,9 @@ public class ConsoleInput implements Runnable{
 		new Thread(this).start();
 	}
 
+	/**
+	 * This thread will handle the user input.
+	 */
 	@Override
 	public void run() {
 		this.out.println("Welcome player :-)");
@@ -38,10 +57,10 @@ public class ConsoleInput implements Runnable{
 			switch (currentCommand) {
 			case GUESS:
 				try {
-					this.controller.sendMessage("GUESS"+Constants.MSG_DELIMITER+commandLine.getParameter(Constants.MSG_BODY_INDEX));
-				} catch(Throwable e) {
+					this.controller.sendGuess(commandLine.getParameter(Constants.COMMANDLINE_GUESS_INDEX));
+				} catch (Throwable e) {
 					this.out.println(e.getMessage());
-				}	
+				}
 				break;
 			case HELP:
 				this.out.println("START - Start a game\n" +
@@ -54,10 +73,10 @@ public class ConsoleInput implements Runnable{
 				break;
 			case START:
 				try {
-					this.controller.sendMessage("START");
-				} catch(Throwable e) {
+					this.controller.startGame();
+				} catch (Throwable e) {
 					this.out.println(e.getMessage());
-				}	
+				}
 				break;
 			case QUIT:
 				try {
@@ -84,6 +103,19 @@ public class ConsoleInput implements Runnable{
 				break;
 			case COMMAND_ERROR:
 				this.out.println("Type \"help\" to see commands");
+				break;
+			case LOGIN:
+				String username = commandLine.getUsername();
+				String password = commandLine.getPassword();
+				if((username != null) && (password != null)) {
+					try {
+						this.controller.login(username, password);
+					} catch (Throwable e) {
+						this.out.println(e.getMessage());
+					}
+				} else {
+					this.out.println("Please enter username and password!");
+				}
 				break;
 			default:
 				break;
