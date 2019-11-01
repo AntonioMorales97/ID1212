@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.Socket;
 
+import common.Constants;
 import common.Receiver;
 import common.Sender;
+import server.controller.Controller;
 
 /**
  * A <code>ClientHandler</code> which will handle the input -and output streams
@@ -24,6 +26,7 @@ public class ClientHandler implements Runnable{
 	private DataInputStream fromClient;
 	private final Sender sender = new Sender();
 	private final Receiver receiver = new Receiver();
+	private final Controller controller = new Controller();
 	
 	/**
 	 * Creates a <code>ClientHandler</code>
@@ -51,17 +54,58 @@ public class ClientHandler implements Runnable{
 		while(this.isConnected) {
 			try {
 				String message = receiver.receiveAllBytes(this.fromClient);
-				System.out.println(message);
+				ClientMessage clientMessage = new ClientMessage(message);
+				String respond;
+				switch (clientMessage.getCommand()) {
+				case "START":
+					respond = this.controller.startGame();
+					this.sender.sendMessageAsBytes(respond, this.toClient);
+					break;
+				case "GUESS":
+					respond = this.controller.makeGuess(clientMessage.getBody());
+					this.sender.sendMessageAsBytes(respond, this.toClient);
+					break;
+				case "DISCONNECT":
+					disconnect();
+					break;
+				default:
+					break;
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace(); //remove this 
+				e.printStackTrace();
 				this.isConnected = false;
 			}
 		}
 		
 	}
 	
-	private void configStreams() {
+	private void disconnect() {
+		try {
+			this.socket.close();
+			this.isConnected = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private class ClientMessage{
+		private String command;
+		private String body = null;
 		
+		public ClientMessage(String clientMessage) {
+			String[] splittedMessage = clientMessage.split(Constants.MSG_DELIMITER);
+			this.command = splittedMessage[Constants.MSG_COMMAND_INDEX];
+			if(splittedMessage.length > 1) {
+				this.body = splittedMessage[Constants.MSG_BODY_INDEX];
+			}
+		}
+		
+		public String getCommand() {
+			return this.command;
+		}
+		
+		public String getBody() {
+			return this.body;
+		}
 	}
 }

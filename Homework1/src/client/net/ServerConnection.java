@@ -13,13 +13,14 @@ import common.Sender;
 public class ServerConnection {
 	private static final int TIMEOUT_TEN_MIN = 600000;
 	private static final int TIMEOUT_TWENTY_SEC = 20000;
+	private static final String DISCONNECT = "DISCONNECT";
 	private final Receiver receiver = new Receiver();
 	private final Sender sender = new Sender();
 	private Socket socket;
 	private DataOutputStream toServer;
 	private DataInputStream fromServer;
 	private volatile boolean isConnected;
-	
+
 	public void connect(String host, int port, OutputHandler handler) throws IOException {
 		this.socket = new Socket();
 		socket.connect(new InetSocketAddress(host, port), TIMEOUT_TWENTY_SEC);
@@ -29,44 +30,36 @@ public class ServerConnection {
 		this.fromServer = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 		new Thread(new ServerListener(handler)).start();
 	}
-	
+
 	/**
 	 * Disconnect by closing the socket, i.e server connection.
+	 * @throws IOException If closing the sockets failed.
 	 */
-	public void disconnect() {
-		System.out.println("Disconnecting...");
-		try {
-			this.socket.close();
-			System.out.println("Disconnected. Bye!");
-			this.socket = null;
-			this.isConnected = false;
-		} catch (IOException e) {
-			System.err.println("Unable to disconnect:");
-			System.err.println(e.getMessage());
-			System.err.println("Exiting...");
-			System.exit(1);
-		}
-		
+	public void disconnect() throws IOException {
+		sendMessage(ServerConnection.DISCONNECT);
+		this.socket.close();
+		this.isConnected = false;	
+		this.socket = null;
 	}
-	
+
 	public void sendMessage(String message) {
 		if(!this.isConnected) {
 			return;
 		}
 		sender.sendMessageAsBytes(message, this.toServer);
 	}
-	
+
 	public boolean isConnected() {
 		return this.isConnected;
 	}
-	
+
 	private class ServerListener implements Runnable {
 		private final OutputHandler outputHandler;
-		
+
 		private ServerListener(OutputHandler outputHandler) {
 			this.outputHandler = outputHandler;
 		}
-		
+
 		@Override
 		public void run() {
 			try {
@@ -78,9 +71,9 @@ public class ServerConnection {
 					outputHandler.handleMessage("Lost connection!");
 				}
 			}
-			
+
 		}
-		
-		
+
+
 	}
 }

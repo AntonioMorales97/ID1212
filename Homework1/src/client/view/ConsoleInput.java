@@ -49,20 +49,35 @@ public class ConsoleInput implements Runnable{
 						+ "CONNECT - Connect to game server\n"
 						+ "DISCONNECT - Disconnect from server\n"
 						+ "QUIT - Quit client\n"
-						+ "INFO - See info"
+						+ "INFO - See info\n"
 						+ "HELP - See help (this)");
 				break;
 			case START:
+				try {
+					this.controller.sendMessage("START");
+				} catch(Throwable e) {
+					this.out.println(e.getMessage());
+				}	
 				break;
 			case QUIT:
-				this.active = false;
-				//disconnect connection
+				try {
+					if(this.controller.isConnectedToServer()) {
+						this.controller.disconnect();
+					}
+					this.active = false;
+				} catch (Throwable e) {
+					this.out.println("Failed to disconnect");
+				}
 				break;
 			case CONNECT:
 				this.controller.connect(this.host, this.port, this.outputHandler);
 				break;
 			case DISCONNECT:
-				//disconnect connection
+				try {
+					this.controller.disconnect();
+				} catch(Throwable e) {
+					this.out.println("Failed to disconnect");
+				}
 				break;
 			case INFO:
 				this.out.println("Hangman game. Start a connection to server and start a new game!");

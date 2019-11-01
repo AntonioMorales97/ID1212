@@ -3,7 +3,7 @@ package client.controller;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+//import java.util.concurrent.CompletionException;
 
 import client.net.OutputHandler;
 import client.net.ServerConnection;
@@ -38,31 +38,31 @@ public class Controller {
 
 	/**
 	 * Async method to start disconnection process in <code>ServerConnection</code>
+	 * @throws IOException 
 	 */
-	public void disconnect() {
-		CompletableFuture.runAsync(() -> {
-			this.connection.disconnect();
-		});
+	public void disconnect() throws IOException {
+		this.connection.disconnect();
+	}
+	
+	/**
+	 * Check if the <code>ServerConnection</code> is connected or not.
+	 * @return true or false depending if it is connected to the server or not.
+	 */
+	public boolean isConnectedToServer() {
+		return this.connection.isConnected();
 	}
 
 	/**
 	 * Async method to send a message to the server by calling <code>ServerConnection</code>
-	 * @param message
+	 * @param message The message to be sent to the server
+	 * @throws Throwable if unable to send message.
 	 */
 	public void sendMessage(String message) throws Throwable {
 		if(!this.connection.isConnected()) {
 			throw new Throwable("Please connect first...");
 		}
 		CompletableFuture.runAsync(() -> {
-			
-				try {
-					this.connection.sendMessage(message);
-				} catch (Exception e) {
-					System.out.println("catched");
-					throw new CompletionException(e);
-				}
-			
-
+			this.connection.sendMessage(message);
 		});
 	}
 }

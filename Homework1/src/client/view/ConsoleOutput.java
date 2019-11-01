@@ -8,14 +8,16 @@ public class ConsoleOutput implements OutputHandler {
 	
 	@Override
 	public void handleMessage(String message) {
-		this.out.println(""); //Print message on a new line
+		//this.out.println(""); //Print message on a new line
 		this.out.println(message);
 		this.out.print(PROMPT);
 	}
 
 	@Override
 	public void handleAnswer(String message) {
-		this.out.println(message);	
+		//this.out.println(""); //Print message on a new line
+		this.out.println(message);
+		this.out.print(PROMPT);
 	}
 
 }

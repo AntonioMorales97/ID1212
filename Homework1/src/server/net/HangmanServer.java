@@ -41,8 +41,8 @@ public class HangmanServer {
 			}
 			
 		} catch(IOException exc) {
-			System.err.println("Catched exception from HangmanServer:");
-			System.err.println(exc.getMessage());
+			System.err.println("Caught exception from HangmanServer:");
+			exc.printStackTrace();
 		}
 		
 	}
