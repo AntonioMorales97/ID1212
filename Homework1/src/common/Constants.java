@@ -1,5 +1,10 @@
 package common;
 
+/**
+ * Holds some common constants used in the application.
+ * @author Antonio
+ *
+ */
 public class Constants {
 	public static final String MSG_DELIMITER = "##";
 	public static final int MSG_TYPE_INDEX = 0;

@@ -64,12 +64,7 @@ public class ServerConnection {
 		this.socket = null;
 	}
 
-	private void sendMessage(String message) {
-		if(!this.isConnected) {
-			return;
-		}
-		sender.sendMessageAsBytes(message, this.toServer);
-	}
+	
 	
 	/**
 	 * Sends a guess request to the server
@@ -115,12 +110,22 @@ public class ServerConnection {
 		sender.sendMessageAsBytes(sb.toString(), this.toServer);
 	}
 	
-	private void setJWT(String jwt) {
-		this.jwt = jwt;
-	}
-
+	/**
+	 * @return true if connected to the server; false otherwise.
+	 */
 	public boolean isConnected() {
 		return this.isConnected;
+	}
+	
+	private void sendMessage(String message) {
+		if(!this.isConnected) {
+			return;
+		}
+		sender.sendMessageAsBytes(message, this.toServer);
+	}
+	
+	private void setJWT(String jwt) {
+		this.jwt = jwt;
 	}
 
 	private class ServerListener implements Runnable {
@@ -155,7 +160,6 @@ public class ServerConnection {
 		private void extractLoginJWT(String message) {
 			String[] splittedMessage = message.split(Constants.MSG_DELIMITER);
 			if(MsgType.valueOf(splittedMessage[Constants.MSG_TYPE_INDEX]).equals(MsgType.LOGIN_SUCCESS)) {
-				//System.out.println(splittedMessage[Constants.MSG_JWT_INDEX]);
 				this.connection.setJWT(splittedMessage[Constants.MSG_JWT_INDEX]);
 			}
 		}

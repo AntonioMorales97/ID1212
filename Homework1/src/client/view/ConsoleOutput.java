@@ -4,16 +4,29 @@ import client.net.OutputHandler;
 import common.Constants;
 import common.MsgType;
 
+/**
+ * Handles server output and displays it in the correct way to the client
+ * (console output). Implements <code>OutputHandler</code>.
+ * 
+ * @author Antonio
+ *
+ */
 public class ConsoleOutput implements OutputHandler {
 	private static final String PROMPT = "$ ";
 	private final SynchronizedStandardOutput out = new SynchronizedStandardOutput();
 	
+	/**
+	 * Prints out simple messages with the <code>SynchronizedStandardOutput</code>.
+	 */
 	@Override
 	public void handleMessage(String message) {
 		this.out.println(message);
 		this.out.print(PROMPT);
 	}
 
+	/**
+	 * Interprets server respond and prints it out with the <code>SynchronizedStandardOutput</code>.
+	 */
 	@Override
 	public void handleAnswer(String message) {
 		MessageParser msgParser = new MessageParser(message);

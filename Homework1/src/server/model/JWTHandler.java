@@ -24,7 +24,7 @@ public class JWTHandler {
 	
 	/**
 	 * Generates a simple JSON Web Token
-	 * @param username Username to put in the JWT for information
+	 * @param username the username to put in the JWT for information
 	 * @return the signed and encoded JWT
 	 */
 	public String generateJWT(String username) {

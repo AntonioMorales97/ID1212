@@ -5,8 +5,22 @@ import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * A <code>Receiver</code> follows a "length-value" protocol, meaning
+ * it will first receive the length of the incoming byte stream and 
+ * then listen until it has received all. See {@link Sender}.
+ * 
+ * @author Antonio
+ *
+ */
 public class Receiver {
 
+	/**
+	 * Receive all the incoming bytes.
+	 * @param inStream the stream where the bytes will come from.
+	 * @return a <code>String</code> of the UTF-8 decoded bytes.
+	 * @throws IOException if a problem occurs with I/O.
+	 */
 	public String receiveAllBytes(DataInputStream inStream) throws IOException{
 		int length = inStream.readInt();
 
@@ -35,17 +49,4 @@ public class Receiver {
 
 		return sb.toString();
 	}
-
-	/*
-	public static void main(String[] args) throws IOException {
-		ServerSocket server = new ServerSocket(5000);
-		Socket socket = server.accept();
-		System.out.println("Got connection from client");
-		Receiver r = new Receiver();
-		DataInputStream in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-		String s = r.receiveAllBytes(in);
-		System.out.println(s);
-		server.close();
-	}
-	*/
 }

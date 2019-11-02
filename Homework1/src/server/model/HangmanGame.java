@@ -14,18 +14,18 @@ import common.Constants;
 public class HangmanGame {
 	private final WordReader wordReader = new WordReader();
 	//private HashSet<Character> guessedLetters = new HashSet<>();
-	private volatile char[] currentGuessWord;
-	private volatile char[] word;
-	private volatile int totalAttempts;
-	private volatile int attemptsLeft;
-	private volatile int score = 0;
-	private volatile boolean decrementNextScore = false;
+	private char[] currentGuessWord;
+	private char[] word;
+	private int totalAttempts;
+	private int attemptsLeft;
+	private int score = 0;
+	private boolean decrementNextScore = false;
 
 	/**
 	 * Start a a game by setting up the game and checking if previous
 	 * round was won. If it was not won, the score decreases.
 	 * 
-	 * @return the view of a new created Hangman game
+	 * @return the game data to be sent to the client.
 	 */
 	public String startGame() {
 		try {
@@ -38,7 +38,10 @@ public class HangmanGame {
 			return gameToClient();
 		} catch(IOException e) {
 			e.printStackTrace();
-			return "Failed to read word file in server side";
+			StringBuilder sb = new StringBuilder();
+			sb.append("Failed to read word file in server side");
+			appendGameStatus(sb);
+			return sb.toString();
 		}
 	}
 
@@ -54,7 +57,7 @@ public class HangmanGame {
 	 * be started. If a new game is started without finishing a game it is counted as a loss.
 	 * 
 	 * @param message The guess, it can be a single letter or a word
-	 * @return the game status as a <code>String</code>. Including the current guesses, remaining
+	 * @return the game data as a <code>String</code>. Including the current guesses, remaining
 	 * attempts and the total score. If the game is over it will return the correct word with the
 	 * updated status.
 	 */
