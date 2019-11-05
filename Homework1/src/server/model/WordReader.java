@@ -36,7 +36,7 @@ public class WordReader {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String word;
 		while((word = reader.readLine()) != null) {
-			this.wordLines.add(word);
+			this.wordLines.add(word.toUpperCase());
 		}
 		reader.close();
 		return this.wordLines.get(rand.nextInt(this.wordLines.size()));

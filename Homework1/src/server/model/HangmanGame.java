@@ -109,6 +109,7 @@ public class HangmanGame {
 	}
 
 	private boolean guessLetter(char letter) {
+		letter = Character.toUpperCase(letter);
 		boolean successGuess = false;
 		for(int i = 0; i < this.word.length; i++) {
 			if(this.word[i] == letter) {
@@ -120,7 +121,7 @@ public class HangmanGame {
 	}
 
 	private boolean guessWord(String guessWord) {
-		if(Arrays.equals(guessWord.toCharArray(), this.word)) {
+		if(Arrays.equals(guessWord.toUpperCase().toCharArray(), this.word)) {
 			this.currentGuessWord = this.word;
 			return true;
 		} else {
