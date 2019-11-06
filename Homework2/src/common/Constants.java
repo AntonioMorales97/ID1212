@@ -18,6 +18,6 @@ public class Constants {
 	public static final String MSG_LEN_DELIMITER = "###";
 	public static final String MSG_TYPE_DELIMITER = "##";
 	public static final int MSG_LEN_INDEX = 0;
-	public static final int MSG_TYPE_INDEX_NEW = 0;
+	public static final int MSG_TYPE_INDEX = 0;
 	public static final int MSG_BODY_INDEX_NEW = 1;
 }

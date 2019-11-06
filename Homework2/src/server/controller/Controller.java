@@ -1,5 +1,8 @@
 package server.controller;
 
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+
 import server.model.HangmanGame;
 
 /**
@@ -11,7 +14,17 @@ import server.model.HangmanGame;
  *
  */
 public class Controller {
-	private final HangmanGame game = new HangmanGame();
+	private HangmanGame game;
+	
+	public Controller() {
+		CompletableFuture.runAsync(() -> {
+			try {
+				this.game = new HangmanGame();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+	}
 	
 	/**
 	 * Start a game in <code>HangmanGame</code>.

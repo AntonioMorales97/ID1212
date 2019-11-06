@@ -30,7 +30,7 @@ public class MessageSplitter {
 	
 	public static MsgType typeOfMessage(String message) {
 		String[] messageParts = message.split(Constants.MSG_TYPE_DELIMITER);
-		return MsgType.valueOf(messageParts[Constants.MSG_TYPE_INDEX_NEW].toUpperCase());
+		return MsgType.valueOf(messageParts[Constants.MSG_TYPE_INDEX].toUpperCase());
 	}
 	
 	public static String bodyOfMessage(String message) {

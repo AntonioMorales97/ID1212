@@ -23,7 +23,13 @@ public class ConsoleOutput implements CommunicationListener {
 
 	@Override
 	public void disconnected() {
-		this.out.println("Successfully disconnected from server!");
+		this.out.println("Disconnected from server!");
+		this.out.print(PROMPT);
+	}
+	
+	@Override
+	public void handleMessage(String msg) {
+		this.out.println(msg);
 		this.out.print(PROMPT);
 	}
 
@@ -51,7 +57,7 @@ public class ConsoleOutput implements CommunicationListener {
 		
 		private MessageParser (String message) {
 			String[] splittedMessage = message.split(Constants.MSG_TYPE_DELIMITER);
-			this.msgType = MsgType.valueOf(getParameter(splittedMessage, Constants.MSG_TYPE_INDEX_NEW));
+			this.msgType = MsgType.valueOf(getParameter(splittedMessage, Constants.MSG_TYPE_INDEX));
 			switch (this.msgType) {
 			case GAME_RESPONSE:
 				this.message = getParameter(splittedMessage, Constants.MSG_BODY_INDEX_NEW);

@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.concurrent.ForkJoinPool;
 
 import common.Constants;
 import common.MessageSplitter;
@@ -21,7 +18,7 @@ import server.controller.Controller;
  * @author Antonio
  *
  */
-public class ClientHandler implements Runnable{
+public class ClientHandler {
 	private final HangmanServer server;
 	private final SocketChannel clientChannel;
 	private final ByteBuffer fromClient = ByteBuffer.allocate(Constants.MAX_MSG_LENGTH);
@@ -33,7 +30,6 @@ public class ClientHandler implements Runnable{
 		this.server = server;
 	}
 	
-	@Override
 	public void run() {
 		while(this.messageSplitter.hasNext()) {
 			ClientMessage clientMessage = new ClientMessage(this.messageSplitter.nextMessage());
@@ -64,7 +60,8 @@ public class ClientHandler implements Runnable{
 		}
 		String receivedMessage = extractBufferMessage();
 		this.messageSplitter.appendReceivedString(receivedMessage);
-		ForkJoinPool.commonPool().execute(this);
+		//ForkJoinPool.commonPool().execute(this);
+		run();
 	}
 	
 	void sendMessage(ByteBuffer msg) throws IOException {
@@ -89,7 +86,7 @@ public class ClientHandler implements Runnable{
 		
 		private ClientMessage(String clientMessage) {
 			this.splittedMessage = clientMessage.split(Constants.MSG_TYPE_DELIMITER);
-			this.msgType = getParameter(splittedMessage, Constants.MSG_TYPE_INDEX_NEW);
+			this.msgType = getParameter(splittedMessage, Constants.MSG_TYPE_INDEX);
 			switch (MsgType.valueOf(this.msgType)) {
 			case GUESS:
 				this.body = getParameter(splittedMessage, Constants.MSG_BODY_INDEX_NEW);

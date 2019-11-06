@@ -9,4 +9,5 @@ public interface CommunicationListener {
 	public void connected();
 	public void disconnected();
 	public void receivedMessage(String msg);
+	public void handleMessage(String msg);
 }

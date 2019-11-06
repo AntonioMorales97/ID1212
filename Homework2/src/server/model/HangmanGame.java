@@ -12,7 +12,7 @@ import common.Constants;
  *
  */
 public class HangmanGame {
-	private final WordReader wordReader = new WordReader();
+	private final WordReader wordReader;
 	//private HashSet<Character> guessedLetters = new HashSet<>();
 	private char[] currentGuessWord;
 	private char[] word;
@@ -20,6 +20,10 @@ public class HangmanGame {
 	private int attemptsLeft;
 	private int score = 0;
 	private boolean decrementNextScore = false;
+	
+	public HangmanGame() throws IOException {
+		this.wordReader = new WordReader();
+	}
 
 	/**
 	 * Start a a game by setting up the game and checking if previous

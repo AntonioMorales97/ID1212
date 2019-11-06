@@ -41,6 +41,7 @@ public class ConsoleInput implements Runnable{
 		}
 		this.active = true;
 		this.serverConn = new ServerConnection();
+		this.serverConn.addCommunicationListener(new ConsoleOutput());
 		new Thread(this).start();
 	}
 
@@ -74,7 +75,6 @@ public class ConsoleInput implements Runnable{
 				this.active = false;
 				break;
 			case CONNECT:
-				this.serverConn.addCommunicationListener(new ConsoleOutput());
 				this.serverConn.connect(this.host, this.port);
 				break;
 			case DISCONNECT:

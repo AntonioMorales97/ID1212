@@ -27,6 +27,7 @@ import common.MsgType;
  */
 public class ServerConnection implements Runnable{
 	private static final String FATAL_COMMUNICATION_MSG = "Lost connection.";
+	private static final String FATAL_DISCONNECT_MSG = "Failed to disconnect, forcing disconnect...";
 	
 	private final ByteBuffer receivingBuffer = ByteBuffer.allocateDirect(Constants.MAX_MSG_LENGTH);
 	private final Queue<ByteBuffer> sendingBuffer = new ArrayDeque<>();
@@ -68,12 +69,12 @@ public class ServerConnection implements Runnable{
 				}
 			}
 		} catch(Exception exc) {
-			exc.printStackTrace();
+			notifyMessage(FATAL_COMMUNICATION_MSG);
 		}
 		try {
 			finishDisconnect();
 		} catch(IOException exc) {
-			exc.printStackTrace();
+			notifyMessage(FATAL_DISCONNECT_MSG);
 		}
 
 	}
@@ -89,10 +90,18 @@ public class ServerConnection implements Runnable{
 	}
 	
 	public void sendGuess(String guessMsg) {
+		if(!this.connected) {
+			notifyMessage("Connect and start a game to make guesses!");
+			return;
+		}
 		sendMessage(MsgType.GUESS.toString(), guessMsg);
 	}
 	
 	public void sendStart() {
+		if(!this.connected) {
+			notifyMessage("Connect to start a game!");
+			return;
+		}
 		sendMessage(MsgType.START.toString());
 	}
 
@@ -135,6 +144,13 @@ public class ServerConnection implements Runnable{
 		Executor pool = ForkJoinPool.commonPool();
 		pool.execute(() -> {
 			listener.disconnected();
+		});
+	}
+	
+	private void notifyMessage(String msg) {
+		Executor pool = ForkJoinPool.commonPool();
+		pool.execute(() -> {
+			listener.handleMessage(msg);
 		});
 	}
 	
