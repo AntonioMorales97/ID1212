@@ -35,17 +35,10 @@ public enum Command {
 	 * Command to quit the client.
 	 */
 	QUIT,
-	
 	/**
 	 * Command to display information about the game.
 	 */
 	INFO,
-	
-	/**
-	 * Command to login and authenticate to be able to play game in the server.
-	 */
-	LOGIN,
-	
 	/**
 	 * Invalid commands are set to this.
 	 */

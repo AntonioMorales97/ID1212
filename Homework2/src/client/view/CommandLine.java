@@ -16,7 +16,9 @@ public class CommandLine {
 
 	/**
 	 * Creates a <code>CommandLine</code> instance with the given
-	 * command line. Also checks if the command line was a login command.
+	 * command line by removing white spaces, extracting the command,
+	 * and parameters.
+	 * 
 	 * @param commandLine the command line that was read.
 	 */
 	CommandLine(String commandLine){

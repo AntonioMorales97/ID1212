@@ -32,8 +32,9 @@ public class ConsoleInput implements Runnable{
 	}
 
 	/**
-	 * Sets the console input to active and creates a thread
-	 * that will manage user input.
+	 * Sets the console input to active, creates a <code>ServerConnection</code> instance
+	 * and adds a <code>ConsoleOutput</code> to it, and finally starts a new thread to 
+	 * manage the user interface.
 	 */
 	public void start() {
 		if(this.active) {

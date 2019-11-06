@@ -7,7 +7,8 @@ import common.Constants;
 //import java.util.HashSet;
 
 /**
- * Hangman game logic.
+ * Hangman game logic and score.
+ * 
  * @author Antonio
  *
  */
@@ -20,7 +21,7 @@ public class HangmanGame {
 	private int attemptsLeft;
 	private int score = 0;
 	private boolean decrementNextScore = false;
-	
+
 	public HangmanGame() throws IOException {
 		this.wordReader = new WordReader();
 	}
@@ -32,21 +33,13 @@ public class HangmanGame {
 	 * @return the game data to be sent to the client.
 	 */
 	public String startGame() {
-		try {
-			setUpGame();
-			if(!this.decrementNextScore) {
-				this.decrementNextScore = true;
-			} else {
-				this.score--;
-			}
-			return gameToClient();
-		} catch(IOException e) {
-			e.printStackTrace();
-			StringBuilder sb = new StringBuilder();
-			sb.append("Failed to read word file in server side");
-			appendGameStatus(sb);
-			return sb.toString();
+		setUpGame();
+		if(!this.decrementNextScore) {
+			this.decrementNextScore = true;
+		} else {
+			this.score--;
 		}
+		return gameToClient();
 	}
 
 	/**
@@ -78,14 +71,14 @@ public class HangmanGame {
 			appendGameStatus(sb);
 			return sb.toString();
 		}
-			
+
 		boolean successGuess = false;
 		if(message.length() == 1) {
 			successGuess = guessLetter(message.charAt(0));
 		} else {
-			 successGuess = guessWord(message);
+			successGuess = guessWord(message);
 		}
-		
+
 		if(!successGuess) {
 			this.attemptsLeft--;
 			if(gameOver()) {
@@ -94,17 +87,17 @@ public class HangmanGame {
 				return gameOverToClient();
 			}
 		}
-		
+
 		if(gameIsWon()) {
 			this.attemptsLeft = 0;
 			this.score++;
 			this.decrementNextScore = false;	
 		}
-		
+
 		return gameToClient();
 	}
 
-	private void setUpGame() throws IOException {
+	private void setUpGame() {
 		this.word = this.wordReader.randomWord().toCharArray();
 		this.totalAttempts = this.word.length;
 		this.attemptsLeft = this.totalAttempts;
@@ -132,21 +125,21 @@ public class HangmanGame {
 			return false;
 		}
 	}
-	
+
 	private boolean gameIsWon() {
 		return Arrays.equals(this.currentGuessWord, this.word);
 	}
-	
+
 	private boolean gameOver() {
 		return this.attemptsLeft == 0;
 	}
-	
+
 	private void appendGuessedLetters(StringBuilder sb) {
 		for(char c : this.currentGuessWord) {
 			sb.append(c + " ");
 		}
 	}
-	
+
 	private void appendCorrectLetters(StringBuilder sb) {
 		for(char c : this.word) {
 			sb.append(c + " ");
@@ -159,7 +152,7 @@ public class HangmanGame {
 		appendGameStatus(sb);
 		return sb.toString();
 	}
-	
+
 	private String gameOverToClient() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("GameOver: ");
@@ -167,7 +160,7 @@ public class HangmanGame {
 		appendGameStatus(sb);
 		return sb.toString();
 	}
-	
+
 	private void appendGameStatus(StringBuilder sb) {
 		sb.append(Constants.MSG_BODY_DELIMETER+this.attemptsLeft+Constants.MSG_BODY_DELIMETER+this.score);
 	}

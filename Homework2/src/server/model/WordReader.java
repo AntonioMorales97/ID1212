@@ -23,16 +23,17 @@ public class WordReader {
 	private final File wordFile = new File(WORD_FILE_TOTAL_PATH);
 	private List<String> words;
 
+	/**
+	 * Creates a <code>WordReader</code> and reads in the the file with a non-blocking
+	 * <code>FileChannel</code> and stores the words in <code>words</code>.
+	 * @throws IOException if some error occurs with reading the file.
+	 */
 	WordReader() throws IOException{
 		this.words = readInWords();
 	}
 
 	/**
-	 * Open, reads, and stores the words and picks a random word.
-	 * If called again and the words are already read it will not open
-	 * the file again.
-	 * @return a random word from the word text file.
-	 * @throws IOException if some error with I/O occurs.
+	 * @return a random word in <code>words</code> as upper case.
 	 */
 	public String randomWord() {
 		Random rand = new Random();

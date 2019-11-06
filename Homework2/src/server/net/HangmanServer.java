@@ -16,9 +16,9 @@ import common.MessageSplitter;
 import common.MsgType;
 
 /**
- * The class <code>HangmanServer</code> will run in a specified port and manage
- * new clients by creating new client sockets and starting a new thread to the
- * {@link ClientHandler}.
+ * The class <code>HangmanServer</code> will run in a specified port and with a 
+ * non-blocking <code>ServerSocketChannel</code> and is also responsible of
+ * managing the client nodes with a <code>Selector</code>; i.e all communication passes through here.
  * 
  * @author Antonio
  *
@@ -41,8 +41,11 @@ public class HangmanServer {
 	}
 	
 	/**
-	 * Starts the <code>HangmanServer</code> by creating a listening <code>ServerSocket</code>
-	 * that listens for new connections from clients.
+	 * Runs the server. This means that it will first configure itself by creating a
+	 * <code>Selector</code> for handling clients nodes, opening a <code>ServerSocketChannel</code>
+	 * and configuring it to be non-blocking and started on the specified port number and also
+	 * registered with the created <code>Selector</code> to wait for new clients. It will then
+	 * live and handle ready <code>SelectionKey</code> accordingly.
 	 */
 	public void run() {
 		try {
@@ -77,6 +80,15 @@ public class HangmanServer {
 		
 	}
 	
+	/**
+	 * Called from a <code>ClientHandler</code> to tell the server that the 
+	 * given message is to be sent to the client. It will then add the message
+	 * converted into a <code>ByteBuffer</code> to the <code>bufferToClient</code>
+	 * and set the key representing the given channel to a write operation. Finally
+	 * the <code>Selector</code> is woken up.
+	 * @param channel the given client channel.
+	 * @param msg the given message.
+	 */
 	void respondToClient(SocketChannel channel, String msg) {
 		ByteBuffer completeMessage = convertToByteBuffer(msg);
 		synchronized(this.bufferToClient) {
@@ -84,11 +96,6 @@ public class HangmanServer {
 		}
 		channel.keyFor(this.selector).interestOps(SelectionKey.OP_WRITE);
 		selector.wakeup();
-	}
-	
-	void disconnect(SocketChannel clientChannel) throws IOException {
-		clientChannel.keyFor(this.selector).cancel();
-		clientChannel.close();
 	}
 	
 	private ByteBuffer convertToByteBuffer(String msg) {
@@ -117,7 +124,7 @@ public class HangmanServer {
 	private void readFromClient(SelectionKey key) throws IOException {
 		HangmanClient client = (HangmanClient) key.attachment();
 		try {
-			client.handler.readMessage(key);
+			client.handler.readMessage();
 		} catch (IOException clientHasLeft) {
 			removeClient(key);
 		}
@@ -159,24 +166,5 @@ public class HangmanServer {
 			}
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 }

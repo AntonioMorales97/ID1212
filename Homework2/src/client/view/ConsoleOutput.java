@@ -5,8 +5,8 @@ import common.Constants;
 import common.MsgType;
 
 /**
- * Handles server output and displays it in the correct way to the client
- * (console output). Implements <code>OutputHandler</code>.
+ * Handles server output or other connection related messages and displays it in the correct way to the client
+ * (console output). Implements <code>CommunicationListener</code>.
  * 
  * @author Antonio
  *
@@ -15,24 +15,37 @@ public class ConsoleOutput implements CommunicationListener {
 	private static final String PROMPT = "$ ";
 	private final SynchronizedStandardOutput out = new SynchronizedStandardOutput();
 	
+	/**
+	 * Called when connection to the server was successful.
+	 */
 	@Override
 	public void connected() {
 		this.out.println("Successfully connected to server!");
 		this.out.print(PROMPT);
 	}
 
+	/**
+	 * Called when disconnected from the server.
+	 */
 	@Override
 	public void disconnected() {
 		this.out.println("Disconnected from server!");
 		this.out.print(PROMPT);
 	}
 	
+	/**
+	 * Called when a message needs to be displayed to the client.
+	 */
 	@Override
 	public void handleMessage(String msg) {
 		this.out.println(msg);
 		this.out.print(PROMPT);
 	}
 
+	/**
+	 * Called when a message was received from the server and 
+	 * is parsed to be correctly displayed to the client.
+	 */
 	@Override
 	public void receivedMessage(String msg) {
 		MessageParser msgParser = new MessageParser(msg);

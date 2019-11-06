@@ -7,8 +7,7 @@ import server.model.HangmanGame;
 
 /**
  * A simple controller that handles calls from the net-layer to the model-layer.
- * Holds a <code>HangmanGame</code> for the game and a <code>AuthenticationManager</code>
- * for authentication of the client.
+ * Holds a <code>HangmanGame</code> for the game.
  * 
  * @author Antonio
  *
@@ -16,6 +15,11 @@ import server.model.HangmanGame;
 public class Controller {
 	private HangmanGame game;
 	
+	/**
+	 * Creates a <code>Controller</code> instance and also a <code>HangmanGame</code>.
+	 * Since the creation of a <code>HangmanGame</code> involves reading a word file,
+	 * this is done asynchronously, i.e executed in the ForkJoinPool.commonPool().
+	 */
 	public Controller() {
 		CompletableFuture.runAsync(() -> {
 			try {

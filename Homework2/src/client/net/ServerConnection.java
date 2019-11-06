@@ -19,8 +19,9 @@ import common.MsgType;
 /**
  * Represents the connection to the server. <code>ServerConnection</code>
  * can connect, disconnect, and send requests from the client to the server.
- * When authenticated, it will hold the JSON Web Token. When connected to the
- * server, a new thread is created to listen for output from the server.
+ * The <code>ServerConnection</code> uses a non-blocking socket, meaning that the 
+ * connection will not be blocked when performing operations like connecting,
+ * writing, reading, etc.
  * 
  * @author Antonio
  *
@@ -38,9 +39,17 @@ public class ServerConnection implements Runnable{
 	private boolean connected;
 	private volatile boolean timeToSend = false;
 
-
 	private CommunicationListener listener;
 
+	/**
+	 * This is run in a separated thread for the client and represents the
+	 * connection to the server. It starts by initializing the connection and configures it 
+	 * to be non-blocking; then it opens a <code>Selector</code> to which the <code>SocketChannel</code>
+	 * is registered to and set to be ready to connect. The <code>Selector</code> will then block and wait
+	 * for channels to be ready for operations, e.g connect, write, read, and act accordingly. 
+	 * 
+	 * Note however that the connection is non-blocking, meaning that the operations will not block.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -79,16 +88,31 @@ public class ServerConnection implements Runnable{
 
 	}
 
+	/**
+	 * Sets the server address to connect to and runs in a new thread.
+	 * 
+	 * @param host The host to connect to (server).
+	 * @param port The port number where to connect to.
+	 */
 	public void connect(String host, int port) {
 		this.serverAddress = new InetSocketAddress(host, port);
 		new Thread(this).start();
 	}
 	
+	/**
+	 * Sets this connection to be disconnected and sends a disconnect message
+	 * to the server.
+	 */
 	public void disconnect() {
 		this.connected = false;
 		sendMessage(MsgType.DISCONNECT.toString());
 	}
 	
+	/**
+	 * Sends a guess message (as part of the game) to the server.
+	 * 
+	 * @param guessMsg the guess; can be a single letter or a word.
+	 */
 	public void sendGuess(String guessMsg) {
 		if(!this.connected) {
 			notifyMessage("Connect and start a game to make guesses!");
@@ -97,6 +121,10 @@ public class ServerConnection implements Runnable{
 		sendMessage(MsgType.GUESS.toString(), guessMsg);
 	}
 	
+	/**
+	 * Sends a start message (as part of the game) to the server, to indicate to
+	 * start a new hangman game.
+	 */
 	public void sendStart() {
 		if(!this.connected) {
 			notifyMessage("Connect to start a game!");
@@ -105,6 +133,11 @@ public class ServerConnection implements Runnable{
 		sendMessage(MsgType.START.toString());
 	}
 
+	/**
+	 * Adds a <code>CommunicationListener</code>. This must be set so the view can be notified.
+	 * 
+	 * @param listener The <code>CommunicationListener</code>.
+	 */
 	public void addCommunicationListener(CommunicationListener listener) {
 		this.listener = listener;
 	}
