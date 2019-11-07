@@ -101,7 +101,8 @@ public class ClientHandler implements Runnable{
 					break;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("Client disconnected");
+				//e.printStackTrace();
 				this.isConnected = false;
 			}
 		}
