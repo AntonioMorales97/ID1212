@@ -20,7 +20,7 @@ public class Sender {
 	 * @param message The message to be sent
 	 * @param out The <code>DataOutputStream</code>
 	 */
-	public void sendMessageAsBytes(String message, DataOutputStream out) {
+	public void sendMessage(String message, DataOutputStream out) {
 		byte[] byteMessage = message.getBytes(StandardCharsets.UTF_8);
 		try {
 			out.writeInt((int) byteMessage.length);

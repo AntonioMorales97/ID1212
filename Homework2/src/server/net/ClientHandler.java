@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 import common.Constants;
-import common.MessageSplitter;
-import common.MsgType;
+import common.MessageDivider;
+import common.MessageType;
 import server.controller.Controller;
 
 /**
@@ -20,7 +20,7 @@ public class ClientHandler {
 	private final HangmanServer server;
 	private final SocketChannel clientChannel;
 	private final ByteBuffer fromClient = ByteBuffer.allocate(Constants.MAX_MSG_LENGTH);
-	private final MessageSplitter messageSplitter = new MessageSplitter();
+	private final MessageDivider messageDivider = new MessageDivider();
 	private final Controller controller = new Controller();
 	
 	/**
@@ -38,10 +38,10 @@ public class ClientHandler {
 	 * Runs whenever a message is received from the client to act accordingly.
 	 */
 	public void run() {
-		while(this.messageSplitter.hasNext()) {
-			ClientMessage clientMessage = new ClientMessage(this.messageSplitter.nextMessage());
+		while(this.messageDivider.hasNext()) {
+			ClientMessage clientMessage = new ClientMessage(this.messageDivider.nextMessage());
 			String response;
-			switch (MsgType.valueOf(clientMessage.msgType)) {
+			switch (MessageType.valueOf(clientMessage.msgType)) {
 			case START:
 				response = this.controller.startGame();
 				this.server.respondToClient(this.clientChannel, response);
@@ -74,7 +74,7 @@ public class ClientHandler {
 			throw new IOException("Connection to client closed!");
 		}
 		String receivedMessage = extractBufferMessage();
-		this.messageSplitter.appendReceivedString(receivedMessage);
+		this.messageDivider.addReceivedMessage(receivedMessage);
 		//ForkJoinPool.commonPool().execute(this);
 		run();
 	}
@@ -112,9 +112,9 @@ public class ClientHandler {
 		private ClientMessage(String clientMessage) {
 			this.splittedMessage = clientMessage.split(Constants.MSG_TYPE_DELIMITER);
 			this.msgType = getParameter(splittedMessage, Constants.MSG_TYPE_INDEX);
-			switch (MsgType.valueOf(this.msgType)) {
+			switch (MessageType.valueOf(this.msgType)) {
 			case GUESS:
-				this.body = getParameter(splittedMessage, Constants.MSG_BODY_INDEX_NEW);
+				this.body = getParameter(splittedMessage, Constants.MSG_BODY_INDEX);
 				break;
 			default:
 				break;

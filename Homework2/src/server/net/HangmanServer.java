@@ -12,8 +12,8 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.Queue;
 
-import common.MessageSplitter;
-import common.MsgType;
+import common.MessageDivider;
+import common.MessageType;
 
 /**
  * The class <code>HangmanServer</code> will run in a specified port and with a 
@@ -61,13 +61,10 @@ public class HangmanServer {
 						continue;
 					}
 					if(key.isAcceptable()) {
-						System.out.println("Accept");
 						startClientHandler(key);
 					} else if (key.isReadable()) {
-						System.out.println("Receive");
 						readFromClient(key);
 					} else if (key.isWritable()) {
-						System.out.println("Write");
 						writeToClient(key);
 					}
 				}
@@ -99,8 +96,8 @@ public class HangmanServer {
 	}
 	
 	private ByteBuffer convertToByteBuffer(String msg) {
-		msg = MessageSplitter.addMsgTypeHeader(MsgType.GAME_RESPONSE.toString(), msg);
-		String msgWithLengthHeader = MessageSplitter.addLengthHeader(msg);
+		msg = MessageDivider.addMsgTypeHeader(MessageType.GAME_RESPONSE.toString(), msg);
+		String msgWithLengthHeader = MessageDivider.addLengthHeader(msg);
 		return ByteBuffer.wrap(msgWithLengthHeader.getBytes());
 	}
 	

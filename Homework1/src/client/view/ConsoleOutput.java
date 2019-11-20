@@ -2,7 +2,7 @@ package client.view;
 
 import client.net.OutputHandler;
 import common.Constants;
-import common.MsgType;
+import common.MessageType;
 
 /**
  * Handles server output and displays it in the correct way to the client
@@ -11,7 +11,7 @@ import common.MsgType;
  * @author Antonio
  *
  */
-public class ConsoleOutput implements OutputHandler {
+class ConsoleOutput implements OutputHandler {
 	private static final String PROMPT = "$ ";
 	private final SynchronizedStandardOutput out = new SynchronizedStandardOutput();
 	
@@ -25,12 +25,12 @@ public class ConsoleOutput implements OutputHandler {
 	}
 
 	/**
-	 * Interprets server respond and prints it out with the <code>SynchronizedStandardOutput</code>.
+	 * Interprets server response and prints it out with the <code>SynchronizedStandardOutput</code>.
 	 */
 	@Override
-	public void handleAnswer(String message) {
+	public void handleResponse(String message) {
 		MessageParser msgParser = new MessageParser(message);
-		MsgType msgType = msgParser.msgType;
+		MessageType msgType = msgParser.msgType;
 		switch (msgType) {
 		case LOGIN_SUCCESS:
 			this.out.println(msgParser.message);
@@ -41,7 +41,7 @@ public class ConsoleOutput implements OutputHandler {
 		case INVALID_REQUEST:
 			this.out.println(msgParser.message);
 			break;
-		case GAME_RESPOND:
+		case GAME_RESPONSE:
 			String[] gameBody = msgParser.message.split(Constants.MSG_BODY_DELIMETER);
 			String gameWord = gameBody[Constants.MSG_BODY_GAME_WORD_INDEX];
 			String remainingAttempts = gameBody[Constants.MSG_BODY_GAME_ATTEMPTS_INDEX];
@@ -55,15 +55,15 @@ public class ConsoleOutput implements OutputHandler {
 	}
 
 	private class MessageParser{
-		private MsgType msgType;
+		private MessageType msgType;
 		private String message = null;
 		
 		private MessageParser (String message) {
 			String[] splittedMessage = message.split(Constants.MSG_DELIMITER);
-			this.msgType = MsgType.valueOf(splittedMessage[Constants.MSG_TYPE_INDEX]);
+			this.msgType = MessageType.valueOf(splittedMessage[Constants.MSG_TYPE_INDEX]);
 			switch (this.msgType) {
 			case LOGIN_SUCCESS:
-				this.message = "Server responded with: " + MsgType.LOGIN_SUCCESS;
+				this.message = "Server responded with: " + MessageType.LOGIN_SUCCESS;
 				break;
 			case LOGIN_FAIL:
 				this.message = "Server responded with: " + splittedMessage[Constants.MSG_BODY_INDEX];
@@ -71,7 +71,7 @@ public class ConsoleOutput implements OutputHandler {
 			case INVALID_REQUEST:
 				this.message = "Server responded with: " + splittedMessage[Constants.MSG_BODY_INDEX];
 				break;
-			case GAME_RESPOND:
+			case GAME_RESPONSE:
 				this.message = splittedMessage[Constants.MSG_BODY_INDEX];
 				break;
 			default:

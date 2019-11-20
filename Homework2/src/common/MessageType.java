@@ -6,7 +6,7 @@ package common;
  * @author Antonio
  *
  */
-public enum MsgType {
+public enum MessageType {
 	/**
 	 * Guess message type
 	 */

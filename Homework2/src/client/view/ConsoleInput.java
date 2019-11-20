@@ -3,7 +3,6 @@ package client.view;
 import java.util.Scanner;
 
 import client.net.ServerConnection;
-import common.Constants;
 
 /**
  * This class handles the client application, i.e connection to the
@@ -13,6 +12,7 @@ import common.Constants;
  *
  */
 public class ConsoleInput implements Runnable{
+	private static final int COMMANDLINE_GUESS_INDEX = 1;
 	private static final String PROMPT = "$ ";
 	private final Scanner console = new Scanner(System.in);
 	private boolean active = false;
@@ -57,7 +57,7 @@ public class ConsoleInput implements Runnable{
 			Command currentCommand = commandLine.getCommand();
 			switch (currentCommand) {
 			case GUESS:
-				this.serverConn.sendGuess(commandLine.getParameter(Constants.COMMANDLINE_GUESS_INDEX));
+				this.serverConn.sendGuess(commandLine.getParameter(COMMANDLINE_GUESS_INDEX));
 				break;
 			case HELP:
 				this.out.println("START - Start a game\n" +

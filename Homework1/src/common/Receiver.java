@@ -16,12 +16,12 @@ import java.nio.charset.StandardCharsets;
 public class Receiver {
 
 	/**
-	 * Receive all the incoming bytes.
+	 * Receive all the incoming message bytes.
 	 * @param inStream the stream where the bytes will come from.
 	 * @return a <code>String</code> of the UTF-8 decoded bytes.
 	 * @throws IOException if a problem occurs with I/O.
 	 */
-	public String receiveAllBytes(DataInputStream inStream) throws IOException{
+	public String receiveMessage(DataInputStream inStream) throws IOException{
 		int length = inStream.readInt();
 
 		byte[] message = new byte[length];
@@ -43,10 +43,7 @@ public class Receiver {
 					endStream = true;
 				}
 			}
-
 		}
-
-
 		return sb.toString();
 	}
 }

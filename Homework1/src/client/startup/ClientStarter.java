@@ -14,7 +14,7 @@ public class ClientStarter {
 
 	/**
 	 * Starts the client.
-	 * @param args
+	 * @param args not used
 	 */
 	public static void main(String[] args) {
 		//System.out.println("Starting Client...");

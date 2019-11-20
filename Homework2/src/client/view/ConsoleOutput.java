@@ -2,7 +2,7 @@ package client.view;
 
 import client.net.CommunicationListener;
 import common.Constants;
-import common.MsgType;
+import common.MessageType;
 
 /**
  * Handles server output or other connection related messages and displays it in the correct way to the client
@@ -47,9 +47,9 @@ public class ConsoleOutput implements CommunicationListener {
 	 * is parsed to be correctly displayed to the client.
 	 */
 	@Override
-	public void receivedMessage(String msg) {
+	public void handleResponse(String msg) {
 		MessageParser msgParser = new MessageParser(msg);
-		MsgType msgType = msgParser.msgType;
+		MessageType msgType = msgParser.msgType;
 		switch (msgType) {
 		case GAME_RESPONSE:
 			String[] gameBody = msgParser.message.split(Constants.MSG_BODY_DELIMETER);
@@ -65,15 +65,15 @@ public class ConsoleOutput implements CommunicationListener {
 	}
 	
 	private class MessageParser{
-		private MsgType msgType;
+		private MessageType msgType;
 		private String message = null;
 		
 		private MessageParser (String message) {
 			String[] splittedMessage = message.split(Constants.MSG_TYPE_DELIMITER);
-			this.msgType = MsgType.valueOf(getParameter(splittedMessage, Constants.MSG_TYPE_INDEX));
+			this.msgType = MessageType.valueOf(getParameter(splittedMessage, Constants.MSG_TYPE_INDEX));
 			switch (this.msgType) {
 			case GAME_RESPONSE:
-				this.message = getParameter(splittedMessage, Constants.MSG_BODY_INDEX_NEW);
+				this.message = getParameter(splittedMessage, Constants.MSG_BODY_INDEX);
 				break;
 			default:
 				break;

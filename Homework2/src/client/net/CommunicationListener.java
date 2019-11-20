@@ -18,7 +18,7 @@ public interface CommunicationListener {
 	 * Called whenever a response from the server has been retrieved
 	 * @param msg The response from the server
 	 */
-	public void receivedMessage(String msg);
+	public void handleResponse(String msg);
 	/**
 	 * Called to notify the view
 	 * @param msg The message to notify the view with

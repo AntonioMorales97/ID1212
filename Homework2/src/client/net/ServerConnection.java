@@ -13,8 +13,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
 import common.Constants;
-import common.MessageSplitter;
-import common.MsgType;
+import common.MessageDivider;
+import common.MessageType;
 
 /**
  * Represents the connection to the server. <code>ServerConnection</code>
@@ -27,12 +27,12 @@ import common.MsgType;
  *
  */
 public class ServerConnection implements Runnable{
-	private static final String FATAL_COMMUNICATION_MSG = "Lost connection.";
-	private static final String FATAL_DISCONNECT_MSG = "Failed to disconnect, forcing disconnect...";
+	private static final String FAIL_COMMUNICATION_MSG = "Lost connection.";
+	private static final String FAIL_DISCONNECT_MSG = "Failed to disconnect, forcing disconnect...";
 	
 	private final ByteBuffer receivingBuffer = ByteBuffer.allocateDirect(Constants.MAX_MSG_LENGTH);
 	private final Queue<ByteBuffer> sendingBuffer = new ArrayDeque<>();
-	private final MessageSplitter messageSplitter = new MessageSplitter();
+	private final MessageDivider messageDivider = new MessageDivider();
 	private InetSocketAddress serverAddress;
 	private Selector selector;
 	private SocketChannel socketChannel;
@@ -53,8 +53,8 @@ public class ServerConnection implements Runnable{
 	@Override
 	public void run() {
 		try {
-			initConnection();
-			initSelector();
+			initiateConnection();
+			initiateSelector();
 
 			while(this.connected || !this.sendingBuffer.isEmpty()) {
 				if(this.timeToSend) {
@@ -78,12 +78,12 @@ public class ServerConnection implements Runnable{
 				}
 			}
 		} catch(Exception exc) {
-			notifyMessage(FATAL_COMMUNICATION_MSG);
+			notifyMessage(FAIL_COMMUNICATION_MSG);
 		}
 		try {
 			finishDisconnect();
 		} catch(IOException exc) {
-			notifyMessage(FATAL_DISCONNECT_MSG);
+			notifyMessage(FAIL_DISCONNECT_MSG);
 		}
 
 	}
@@ -105,7 +105,7 @@ public class ServerConnection implements Runnable{
 	 */
 	public void disconnect() {
 		this.connected = false;
-		sendMessage(MsgType.DISCONNECT.toString());
+		sendMessage(MessageType.DISCONNECT.toString());
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class ServerConnection implements Runnable{
 			notifyMessage("Connect and start a game to make guesses!");
 			return;
 		}
-		sendMessage(MsgType.GUESS.toString(), guessMsg);
+		sendMessage(MessageType.GUESS.toString(), guessMsg);
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public class ServerConnection implements Runnable{
 			notifyMessage("Connect to start a game!");
 			return;
 		}
-		sendMessage(MsgType.START.toString());
+		sendMessage(MessageType.START.toString());
 	}
 
 	/**
@@ -145,15 +145,15 @@ public class ServerConnection implements Runnable{
 	private void finishDisconnect() throws IOException {
 		this.socketChannel.close();
 		this.socketChannel.keyFor(this.selector).cancel();
-		notifyDisconnected();
+		notifyDisconnectedComplete();
 	}
 	
-	private void initSelector() throws IOException {
+	private void initiateSelector() throws IOException {
 		this.selector = Selector.open();
 		this.socketChannel.register(selector, SelectionKey.OP_CONNECT);
 	}
 
-	private void initConnection() throws IOException {
+	private void initiateConnection() throws IOException {
 		this.socketChannel = SocketChannel.open();
 		socketChannel.configureBlocking(false);
 		socketChannel.connect(this.serverAddress);
@@ -163,17 +163,17 @@ public class ServerConnection implements Runnable{
 	private void completeConnection(SelectionKey key) throws IOException {
 		this.socketChannel.finishConnect();
 		key.interestOps(SelectionKey.OP_READ);
-		notifyConnected();
+		notifyConnectedComplete();
 	}
 
-	private void notifyConnected() {
+	private void notifyConnectedComplete() {
 		Executor pool = ForkJoinPool.commonPool();
 		pool.execute(() -> {
 			this.listener.connected();
 		});
 	}
 	
-	private void notifyDisconnected() {
+	private void notifyDisconnectedComplete() {
 		Executor pool = ForkJoinPool.commonPool();
 		pool.execute(() -> {
 			listener.disconnected();
@@ -191,12 +191,12 @@ public class ServerConnection implements Runnable{
 		this.receivingBuffer.clear();
 		int numOfReadBytes = socketChannel.read(this.receivingBuffer);
 		if(numOfReadBytes == -1) {
-			throw new IOException(FATAL_COMMUNICATION_MSG);
+			throw new IOException(FAIL_COMMUNICATION_MSG);
 		}
 		String readMsg = getMessageFromBuffer();
-		this.messageSplitter.appendReceivedString(readMsg);
-		while(this.messageSplitter.hasNext()) {
-			String message = this.messageSplitter.nextMessage();
+		this.messageDivider.addReceivedMessage(readMsg);
+		while(this.messageDivider.hasNext()) {
+			String message = this.messageDivider.nextMessage();
 			notifyMessageReceived(message);
 		}
 	}
@@ -225,7 +225,7 @@ public class ServerConnection implements Runnable{
 	private void notifyMessageReceived(String msg) {
 		Executor pool = ForkJoinPool.commonPool();
 		pool.execute(() -> {
-			listener.receivedMessage(msg);
+			listener.handleResponse(msg);
 		});
 	}
 	
@@ -234,7 +234,7 @@ public class ServerConnection implements Runnable{
 		for(String part : parts) {
 			joiner.add(part);
 		}
-		String msgWithLengthHeader = MessageSplitter.addLengthHeader(joiner.toString());
+		String msgWithLengthHeader = MessageDivider.addLengthHeader(joiner.toString());
 		synchronized(this.sendingBuffer) {
 			this.sendingBuffer.add(ByteBuffer.wrap(msgWithLengthHeader.getBytes()));
 		}

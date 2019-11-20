@@ -6,7 +6,7 @@ package common;
  * @author Antonio
  *
  */
-public enum MsgType {
+public enum MessageType {
 	/**
 	 * Guess message type
 	 */
@@ -30,7 +30,7 @@ public enum MsgType {
 	/**
 	 * Game respond message type
 	 */
-	GAME_RESPOND,
+	GAME_RESPONSE,
 	
 	/**
 	 * Login success message type

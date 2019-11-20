@@ -1,7 +1,5 @@
 package client.view;
 
-import common.Constants;
-
 /**
  * Represents the read command line; holds the parameters.
  * 
@@ -9,6 +7,7 @@ import common.Constants;
  *
  */
 public class CommandLine {
+	private static final int COMMANDLINE_COMMAND_INDEX = 0;
 	private static final String PARAM_DELIMETER = " ";
 	private final String commandLine;
 	private String[] parameters;
@@ -56,7 +55,7 @@ public class CommandLine {
 	private void parseCommand(String commandLine) {
 		try {
 			this.parameters = removeWhiteSpace(commandLine).split(PARAM_DELIMETER);
-			this.command = Command.valueOf(this.parameters[Constants.COMMANDLINE_COMMAND_INDEX].toUpperCase());
+			this.command = Command.valueOf(this.parameters[COMMANDLINE_COMMAND_INDEX].toUpperCase());
 		} catch(Throwable commandLineFailure) {
 			this.command = Command.COMMAND_ERROR;
 		}

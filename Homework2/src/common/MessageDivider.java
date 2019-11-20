@@ -2,7 +2,6 @@ package common;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.StringJoiner;
 
 /**
  * Used for receiving partial messages, adding length headers, adding message type headers,
@@ -10,7 +9,7 @@ import java.util.StringJoiner;
  * @author Antonio
  *
  */
-public class MessageSplitter {
+public class MessageDivider {
 	private StringBuilder receivedChars = new StringBuilder();
 	private final Queue<String> messages = new ArrayDeque<>();
 	
@@ -19,7 +18,7 @@ public class MessageSplitter {
 	 * 
 	 * @param receivedString The received message.
 	 */
-	public synchronized void appendReceivedString(String receivedString) {
+	public synchronized void addReceivedMessage(String receivedString) {
 		this.receivedChars.append(receivedString);
 		while(extractCompleteMessage());
 	}
@@ -46,10 +45,7 @@ public class MessageSplitter {
 	 * @return the message but now with an added length header.
 	 */
 	public static String addLengthHeader(String msg) {
-		StringJoiner joiner = new StringJoiner(Constants.MSG_LEN_DELIMITER);
-		joiner.add(Integer.toString(msg.length()));
-		joiner.add(msg);
-		return joiner.toString();
+		return Integer.toString(msg.length()) + Constants.MSG_LEN_DELIMITER + msg;
 	}
 	
 	/**
@@ -57,9 +53,9 @@ public class MessageSplitter {
 	 * @param message the message.
 	 * @return the <code>MsgType</code> of the given message.
 	 */
-	public static MsgType typeOfMessage(String message) {
+	public static MessageType typeOfMessage(String message) {
 		String[] messageParts = message.split(Constants.MSG_TYPE_DELIMITER);
-		return MsgType.valueOf(messageParts[Constants.MSG_TYPE_INDEX].toUpperCase());
+		return MessageType.valueOf(messageParts[Constants.MSG_TYPE_INDEX].toUpperCase());
 	}
 	
 	/**
@@ -68,7 +64,7 @@ public class MessageSplitter {
 	 */
 	public static String bodyOfMessage(String message) {
 		String[] messageParts = message.split(Constants.MSG_TYPE_DELIMITER);
-		return messageParts[Constants.MSG_BODY_INDEX_NEW];
+		return messageParts[Constants.MSG_BODY_INDEX];
 	}
 	
 	/**
@@ -78,10 +74,7 @@ public class MessageSplitter {
 	 * @return a message with the added <code>MsgType</code>.
 	 */
 	public static String addMsgTypeHeader(String type, String msg) {
-		StringJoiner joiner = new StringJoiner(Constants.MSG_TYPE_DELIMITER);
-		joiner.add(type);
-		joiner.add(msg);
-		return joiner.toString();
+		return type + Constants.MSG_TYPE_DELIMITER + msg;
 	}
 	
 	private boolean extractCompleteMessage() {
@@ -92,8 +85,8 @@ public class MessageSplitter {
 		}
 		String lengthHeader = splitAtLengthHeader[Constants.MSG_LEN_INDEX];
 		int length = Integer.parseInt(lengthHeader);
-		if(isComplete(length, splitAtLengthHeader[1])) {
-			String completeMessage = splitAtLengthHeader[1].substring(0, length);
+		if(isComplete(length, splitAtLengthHeader[Constants.MSG_BODY_INDEX])) {
+			String completeMessage = splitAtLengthHeader[Constants.MSG_BODY_INDEX].substring(0, length);
 			this.messages.add(completeMessage);
 			this.receivedChars.delete(0, lengthHeader.length() + Constants.MSG_LEN_DELIMITER.length() + length);
 			return true;

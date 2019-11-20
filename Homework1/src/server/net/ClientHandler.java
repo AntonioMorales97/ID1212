@@ -8,7 +8,7 @@ import java.io.UncheckedIOException;
 import java.net.Socket;
 
 import common.Constants;
-import common.MsgType;
+import common.MessageType;
 import common.Receiver;
 import common.Sender;
 import server.controller.Controller;
@@ -54,47 +54,47 @@ public class ClientHandler implements Runnable{
 		}
 		while(this.isConnected) {
 			try {
-				String message = receiver.receiveAllBytes(this.fromClient);
+				String message = receiver.receiveMessage(this.fromClient);
 				ClientMessage clientMessage = new ClientMessage(message);
 				String respond;
-				switch (clientMessage.getCommand()) {
+				switch (clientMessage.command) {
 				case "START":
 					try {
-						if(clientMessage.getEncodedJwt() == null) {
-							sendToClient(MsgType.INVALID_REQUEST, "Please login!");
+						if(clientMessage.encodedJwt == null) {
+							sendToClient(MessageType.INVALID_REQUEST, "Please login!");
 							break;
 						}
-						this.controller.validJwt(clientMessage.getEncodedJwt());
+						this.controller.validJwt(clientMessage.encodedJwt);
 						respond = this.controller.startGame();
-						sendToClient(MsgType.GAME_RESPOND, respond);
+						sendToClient(MessageType.GAME_RESPONSE, respond);
 					} catch(Throwable e) {
-						sendToClient(MsgType.INVALID_REQUEST, e.getMessage());
+						sendToClient(MessageType.INVALID_REQUEST, e.getMessage());
 					}	
 					break;
 				case "GUESS":
 					try {
-						if(clientMessage.getEncodedJwt() == null) {
-							sendToClient(MsgType.INVALID_REQUEST, "Please login and start a game!");
+						if(clientMessage.encodedJwt == null) {
+							sendToClient(MessageType.INVALID_REQUEST, "Please login and start a game!");
 							break;
 						}
-						this.controller.validJwt(clientMessage.getEncodedJwt());
-						respond = this.controller.makeGuess(clientMessage.getBody());
-						sendToClient(MsgType.GAME_RESPOND, respond);
+						this.controller.validJwt(clientMessage.encodedJwt);
+						respond = this.controller.makeGuess(clientMessage.body);
+						sendToClient(MessageType.GAME_RESPONSE, respond);
 					} catch(Throwable e) {
-						sendToClient(MsgType.INVALID_REQUEST, e.getMessage());
+						sendToClient(MessageType.INVALID_REQUEST, e.getMessage());
 					}	
 					break;
 				case "DISCONNECT":
 					disconnect();
 					break;
 				case "LOGIN":
-					String username = clientMessage.getUsername();
-					String password = clientMessage.getPassword();
+					String username = clientMessage.username;
+					String password = clientMessage.password;
 					try {
 						String encodedJwt = this.controller.login(username, password);
-						sendToClient(MsgType.LOGIN_SUCCESS, encodedJwt);
+						sendToClient(MessageType.LOGIN_SUCCESS, encodedJwt);
 					} catch (Throwable e) {
-						sendToClient(MsgType.LOGIN_FAIL, e.getMessage());
+						sendToClient(MessageType.LOGIN_FAIL, e.getMessage());
 					}
 					break;
 				default:
@@ -118,8 +118,8 @@ public class ClientHandler implements Runnable{
 		}
 	}
 	
-	private void sendToClient(MsgType msgType, String msg) {
-		this.sender.sendMessageAsBytes(msgType+Constants.MSG_DELIMITER+msg, this.toClient);
+	private void sendToClient(MessageType msgType, String msg) {
+		this.sender.sendMessage(msgType+Constants.MSG_DELIMITER+msg, this.toClient);
 	}
 	
 	private class ClientMessage{
@@ -133,7 +133,7 @@ public class ClientHandler implements Runnable{
 		private ClientMessage(String clientMessage) {
 			this.splittedMessage = clientMessage.split(Constants.MSG_DELIMITER);
 			this.command = this.splittedMessage[Constants.MSG_TYPE_INDEX];
-			switch (MsgType.valueOf(this.command)) {
+			switch (MessageType.valueOf(this.command)) {
 			case LOGIN:
 				this.body = getParameter(Constants.MSG_BODY_INDEX);
 				String[] credentials = this.body.split(Constants.MSG_BODY_DELIMETER);
@@ -152,26 +152,6 @@ public class ClientHandler implements Runnable{
 			default:
 				break;
 			}	
-		}
-		
-		private String getCommand() {
-			return this.command;
-		}
-		
-		private String getBody() {
-			return this.body;
-		}
-		
-		private String getEncodedJwt() {
-			return this.encodedJwt;
-		}
-		
-		private String getUsername() {
-			return this.username;
-		}
-		
-		private String getPassword() {
-			return this.password;
 		}
 		
 		private void setEncodedJwt() {

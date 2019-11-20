@@ -10,7 +10,7 @@ public interface OutputHandler {
 	 * Called when an output from the server is received.
 	 * @param message the output from the server
 	 */
-	public void handleAnswer(String message);
+	public void handleResponse(String message);
 	
 	/**
 	 * Called when something with the server connection occurs

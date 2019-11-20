@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import common.Constants;
-import common.MsgType;
+import common.MessageType;
 import common.Receiver;
 import common.Sender;
 
@@ -75,12 +75,12 @@ public class ServerConnection {
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(MsgType.GUESS);
+		sb.append(MessageType.GUESS);
 		sb.append(Constants.MSG_DELIMITER);
 		sb.append(this.jwt);
 		sb.append(Constants.MSG_DELIMITER);
 		sb.append(guess);
-		sender.sendMessageAsBytes(sb.toString(), this.toServer);
+		sender.sendMessage(sb.toString(), this.toServer);
 	}
 	
 	/**
@@ -91,10 +91,10 @@ public class ServerConnection {
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(MsgType.START);
+		sb.append(MessageType.START);
 		sb.append(Constants.MSG_DELIMITER);
 		sb.append(this.jwt);
-		sender.sendMessageAsBytes(sb.toString(), this.toServer);
+		sender.sendMessage(sb.toString(), this.toServer);
 	}
 	
 	/**
@@ -104,10 +104,10 @@ public class ServerConnection {
 	 */
 	public void sendLogin(String username, String password) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(MsgType.LOGIN);
+		sb.append(MessageType.LOGIN);
 		sb.append(Constants.MSG_DELIMITER);
 		sb.append(username+Constants.MSG_BODY_DELIMETER+password);
-		sender.sendMessageAsBytes(sb.toString(), this.toServer);
+		sender.sendMessage(sb.toString(), this.toServer);
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class ServerConnection {
 		if(!this.isConnected) {
 			return;
 		}
-		sender.sendMessageAsBytes(message, this.toServer);
+		sender.sendMessage(message, this.toServer);
 	}
 	
 	private void setJWT(String jwt) {
@@ -145,9 +145,9 @@ public class ServerConnection {
 		public void run() {
 			try {
 				while(true) { 
-					String respond = receiver.receiveAllBytes(fromServer);
-					extractLoginJWT(respond);
-					outputHandler.handleAnswer(respond);
+					String response = receiver.receiveMessage(fromServer);
+					extractLoginJWT(response);
+					outputHandler.handleResponse(response);
 				}
 			} catch (Throwable connectionFailure) {
 				if(isConnected) {
@@ -159,7 +159,7 @@ public class ServerConnection {
 		
 		private void extractLoginJWT(String message) {
 			String[] splittedMessage = message.split(Constants.MSG_DELIMITER);
-			if(MsgType.valueOf(splittedMessage[Constants.MSG_TYPE_INDEX]).equals(MsgType.LOGIN_SUCCESS)) {
+			if(MessageType.valueOf(splittedMessage[Constants.MSG_TYPE_INDEX]).equals(MessageType.LOGIN_SUCCESS)) {
 				this.connection.setJWT(splittedMessage[Constants.MSG_JWT_INDEX]);
 			}
 		}

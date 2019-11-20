@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import client.controller.Controller;
 import client.net.OutputHandler;
-import common.Constants;
 
 /**
  * This class handles the client application, i.e connection to the
@@ -15,6 +14,7 @@ import common.Constants;
  */
 public class ConsoleInput implements Runnable{
 	private static final String PROMPT = "$ ";
+	private static final int COMMANDLINE_GUESS_INDEX = 1;
 	private final Scanner console = new Scanner(System.in);
 	private boolean active = false;
 	private final Controller controller = new Controller();
@@ -57,7 +57,7 @@ public class ConsoleInput implements Runnable{
 			switch (currentCommand) {
 			case GUESS:
 				try {
-					this.controller.sendGuess(commandLine.getParameter(Constants.COMMANDLINE_GUESS_INDEX));
+					this.controller.sendGuess(commandLine.getParameter(COMMANDLINE_GUESS_INDEX));
 				} catch (Throwable e) {
 					this.out.println(e.getMessage());
 				}
