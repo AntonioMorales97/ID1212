@@ -136,7 +136,7 @@ public class ClientHandler implements Runnable{
 			switch (MessageType.valueOf(this.command)) {
 			case LOGIN:
 				this.body = getParameter(Constants.MSG_BODY_INDEX);
-				String[] credentials = this.body.split(Constants.MSG_BODY_DELIMETER);
+				String[] credentials = this.body.split(Constants.MSG_BODY_DELIMITER);
 				this.username = credentials[Constants.MSG_BODY_USERNAME_INDEX];
 				this.password = credentials[Constants.MSG_BODY_PASSWORD_INDEX];
 				break;

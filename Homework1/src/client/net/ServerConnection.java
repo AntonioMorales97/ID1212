@@ -106,7 +106,7 @@ public class ServerConnection {
 		StringBuilder sb = new StringBuilder();
 		sb.append(MessageType.LOGIN);
 		sb.append(Constants.MSG_DELIMITER);
-		sb.append(username+Constants.MSG_BODY_DELIMETER+password);
+		sb.append(username+Constants.MSG_BODY_DELIMITER+password);
 		sender.sendMessage(sb.toString(), this.toServer);
 	}
 	

@@ -7,7 +7,7 @@ package client.view;
  *
  */
 class CommandLine {
-	private static final String PARAM_DELIMETER = " ";
+	private static final String PARAM_DELIMITER = " ";
 	private static final int COMMANDLINE_COMMAND_INDEX = 0;
 	private static final int COMMANDLINE_USERNAME_INDEX = 1;
 	private static final int COMMANDLINE_PASSWORD_INDEX = 2;
@@ -71,7 +71,7 @@ class CommandLine {
 	
 	private void parseCommand(String commandLine) {
 		try {
-			this.parameters = removeWhiteSpace(commandLine).split(PARAM_DELIMETER);
+			this.parameters = removeWhiteSpace(commandLine).split(PARAM_DELIMITER);
 			this.command = Command.valueOf(this.parameters[COMMANDLINE_COMMAND_INDEX].toUpperCase());
 		} catch(Throwable commandLineFailure) {
 			this.command = Command.COMMAND_ERROR;
@@ -90,6 +90,6 @@ class CommandLine {
 		if(commandLine == null) {
 			return null;
 		}
-		return commandLine.trim().replaceAll(PARAM_DELIMETER + "+", PARAM_DELIMETER);
+		return commandLine.trim().replaceAll(PARAM_DELIMITER + "+", PARAM_DELIMITER);
 	}
 }

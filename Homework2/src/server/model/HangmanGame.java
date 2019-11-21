@@ -162,6 +162,6 @@ public class HangmanGame {
 	}
 
 	private void appendGameStatus(StringBuilder sb) {
-		sb.append(Constants.MSG_BODY_DELIMETER+this.attemptsLeft+Constants.MSG_BODY_DELIMETER+this.score);
+		sb.append(Constants.MSG_BODY_DELIMITER+this.attemptsLeft+Constants.MSG_BODY_DELIMITER+this.score);
 	}
 }

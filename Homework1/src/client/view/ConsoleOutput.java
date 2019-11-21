@@ -42,7 +42,7 @@ class ConsoleOutput implements OutputHandler {
 			this.out.println(msgParser.message);
 			break;
 		case GAME_RESPONSE:
-			String[] gameBody = msgParser.message.split(Constants.MSG_BODY_DELIMETER);
+			String[] gameBody = msgParser.message.split(Constants.MSG_BODY_DELIMITER);
 			String gameWord = gameBody[Constants.MSG_BODY_GAME_WORD_INDEX];
 			String remainingAttempts = gameBody[Constants.MSG_BODY_GAME_ATTEMPTS_INDEX];
 			String score = gameBody[Constants.MSG_BODY_GAME_SCORE_INDEX];
