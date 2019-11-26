@@ -30,7 +30,7 @@ public class ConsoleInput implements Runnable{
 
 	/**
 	 * Creates a <code>ConsoleInput</code> instance with given parameters
-	 * @param catalog the <code>Catalog</code> RMI.
+	 * @param catalog the <code>Catalog</code> stub object (RMI).
 	 * @param host The host to connect to
 	 * @param port The port where the host is running its service
 	 * @throws IOException 

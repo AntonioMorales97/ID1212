@@ -18,8 +18,9 @@ public class ClientStarter {
 	private static final String LOCALHOST = "127.0.0.1";
 
 	/**
-	 * Starts the client by getting a <code>Catalog</code> from the registry 
-	 * and creating a <code>ConsoleInput</code> with the specified host and port.
+	 * Starts the client by getting a <code>Catalog</code> stub object 
+	 * from the registry and creating a <code>ConsoleInput</code> with 
+	 * the specified host and port.
 	 * @param args not used.
 	 */
 	public static void main(String[] args) {
