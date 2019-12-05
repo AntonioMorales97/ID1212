@@ -1,0 +1,2 @@
+INSERT INTO conversion_counter (id, count) VALUES (1, 0);
+INSERT INTO currency_conversion (id, rate, from_currency, to_currency) VALUES (1, 10.61, 'EUR', 'SEK'), (2, 3.73, 'EUR', 'PEN'), (3, 1.10, 'EUR', 'USD'), (4, 3.38, 'USD', 'PEN'),(5, 9.63, 'USD', 'SEK'), (6, 2.85, 'PEN', 'SEK');

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Simple Currency Converter</title>
+</head>
+<body>
+	<main>
+    	<section>
+        	<div class="jumbotron" style="background:transparent">
+        	    <h1 class="display-4">Simple Currency Converter</h1>
+            	<hr/>
+            	<section>
+            	    <h1 th:text="${errorType}">Error Type</h1>
+               		<p class="info" th:text="${errorInfo}">Error info"</p>
+            	</section>
+            	<button class="btn btn-outline-primary btn-block pt-3 pb-3" type="button" onClick="history.back(-1)">Back and try again</button>
+        	</div>
+    	</section>
+	</main>
+</body>
+</html>

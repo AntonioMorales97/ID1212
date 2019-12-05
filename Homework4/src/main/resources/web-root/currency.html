@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Simple Currency Converter</title>
+</head>
+<body>
+	<main>
+    	<section>
+        	<div class="jumbotron" style="background:transparent">
+            	<h1 class="display-4">Simple Currency Converter</h1>
+            	<hr/>
+            	<ul class="list-group">
+                	<p class="list-group-item list-group-item-success">Supported currencies</p>
+                	<li class="list-group-item">EUR</li>
+                	<li class="list-group-item">PEN</li>
+                	<li class="list-group-item">SEK</li>
+                	<li class="list-group-item">USD</li>
+            	</ul>
+            	<hr/>
+            	<form th:action="@{/convert}" th:object="${currencyConversionForm}" method="post">
+                	<div class="alert alert-success">
+                    	<h2 class="display-8">Converted Amount</h2>
+                    	<p class="alert alert-light pt-3 pb-3">
+                        	<span th:text="*{convertedAmount}"> </span><span th:unless="${#fields.hasErrors('amount') || #fields.hasErrors('fromCurrency') || #fields.hasErrors('toCurrency')}" th:text="*{toCurrency}"></span>
+                   		</p>
+                	</div>
+                	<h2 class="display-6">Enter amount to convert and also the currencies</h2>
+                	<div class="mb-2">
+                  	 	<span class="input-group-text mr-2" >Convert from</span><input class="mt-1 mr-1 pl-2" type="text" th:field="*{fromCurrency}" id="currency-from"/>
+                    	<span class="alert-danger" th:if="${#fields.hasErrors('fromCurrency')}" th:errors="*{fromCurrency}">From Currency Error</span>
+                	</div>
+                	<div class="mb-2">
+                    	<span class="input-group-text mr-2" >Convert to</span><input class="mt-1 mr-1 pl-2" type="text" th:field="*{toCurrency}" id="currency-to"/>
+                    	<span class="alert-danger" th:if="${#fields.hasErrors('toCurrency')}" th:errors="*{toCurrency}">To Currency Error</span>
+                	</div>
+
+                	<div class="mb-2">
+                    	<span class="input-group-text mr-2" >Amount</span><input class="mt-1 mr-1 pl-2" type="number" step="0.01" th:field="*{amount}" id="currency-amount"/>
+                    	<span class="alert-danger" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount Error</span>
+                	</div>
+                	<p>
+                    	<input type="submit" class="btn btn-outline-success btn-block pt-3 pb-3" value="Convert"/>
+                	</p>
+            	</form>
+        	</div>
+    	</section>
+	</main>
+</body>
+</html>
