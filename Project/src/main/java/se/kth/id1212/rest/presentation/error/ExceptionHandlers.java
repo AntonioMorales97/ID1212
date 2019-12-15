@@ -28,7 +28,7 @@ import se.kth.id1212.rest.exception.IllegalTransactionException;
 class ExceptionHandlers {
 	private final String INVALID_METHOD_ARGUMENTS = "Invalid method arguments";
 	private final String METHOD_ARGUMENT_TYPE_MISMATCH = "The type of the given arguments are wrong";
-	
+
 	/**
 	 * Handles <code>CustomerNotFoundException</code>s.
 	 * 
@@ -40,7 +40,7 @@ class ExceptionHandlers {
 	ErrorResponse customerNotFoundExceptionHandler(Exception exc) {
 		return new ErrorResponse(HttpStatus.NOT_FOUND.getReasonPhrase(), exc.getMessage());
 	}
-	
+
 	/**
 	 * Handles <code>IllegalTransactionException</code>s.
 	 * 
@@ -52,7 +52,7 @@ class ExceptionHandlers {
 	ErrorResponse illegalTransactionExceptionHandler(IllegalTransactionException exc) {
 		return new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), exc.getMessage());
 	}
-	
+
 	/**
 	 * Handles <code>NoHandlerException</code>s.
 	 * 
@@ -64,7 +64,7 @@ class ExceptionHandlers {
 	ErrorResponse noHandlerFoundExceptionHanlder(NoHandlerFoundException exc) {
 		return new ErrorResponse(HttpStatus.NOT_FOUND.getReasonPhrase(), exc.getMessage());
 	}
-	
+
 	/**
 	 * Handles <code>MissingServletRequestParameterException</code>s.
 	 * 
@@ -76,14 +76,7 @@ class ExceptionHandlers {
 	ErrorResponse missingServletRequestParameterException( MissingServletRequestParameterException exc){
 		return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), exc.getMessage());
 	}
-	
-	/**
-	 * Handler for transaction failures, e.g constraint violations. Could
-	 * also be a responsibility of the front-end to validate such constraints.
-	 * 
-	 * @param exc The <code>TransactionSystemException</code>.
-	 * @return the exception message.
-	 */
+
 	/*
 	@ExceptionHandler(TransactionSystemException.class)
 	ResponseEntity<RepresentationModel<?>> handleRollbackException(TransactionSystemException exc) {
@@ -95,15 +88,15 @@ class ExceptionHandlers {
 				((ConstraintViolationException) e).getConstraintViolations().forEach(violation -> {
 					str.add(violation.getMessage());
 				});
-				
+
 				return toResponseEntity(HttpStatus.BAD_REQUEST, str.toString());
 			}
 			return toResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
 		}
 		return toResponseEntity(HttpStatus.BAD_REQUEST, exc.getMessage());
 	}
-	*/
-	
+	 */
+
 
 	/**
 	 * Handler for invalid method arguments. For example, missing fields in
@@ -114,7 +107,7 @@ class ExceptionHandlers {
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	 ViolationResponse constraintViolationExceptionHandler(MethodArgumentNotValidException exc){
+	ViolationResponse constraintViolationExceptionHandler(MethodArgumentNotValidException exc){
 		ViolationResponse vr = new ViolationResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), INVALID_METHOD_ARGUMENTS);
 		List<Violation> violations = vr.getViolations();
 		exc.getBindingResult().getFieldErrors().forEach(fieldError -> {
@@ -122,7 +115,7 @@ class ExceptionHandlers {
 		});
 		return vr;
 	}
-	
+
 	/**
 	 * Handler for not supported methods.
 	 * 
@@ -134,7 +127,7 @@ class ExceptionHandlers {
 	ErrorResponse handleMethodNotAllowed(HttpRequestMethodNotSupportedException exc) {
 		return new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase(), exc.getMessage());
 	}
-	
+
 	/**
 	 * Handler for method argument type mismatches.
 	 * 
@@ -147,7 +140,7 @@ class ExceptionHandlers {
 		return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), METHOD_ARGUMENT_TYPE_MISMATCH
 				+ ", expected: " + exc.getRequiredType().getSimpleName());
 	}
-	
+
 	/**
 	 * Handles the exceptions that are not handled by any other exception handler.
 	 * 
@@ -161,11 +154,4 @@ class ExceptionHandlers {
 		exc.printStackTrace();
 		return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), exc.getMessage());
 	}
-	
-	/*
-	private ResponseEntity<RepresentationModel<?>> toResponseEntity(HttpStatus httpStatus, String msg){
-		return ResponseEntity.status(httpStatus)
-				.body(new VndErrors.VndError(httpStatus.getReasonPhrase(), msg));
-	}
-	*/
 }

@@ -18,7 +18,7 @@ import se.kth.id1212.rest.repository.OrderRepository;
 import se.kth.id1212.rest.util.OrderStatus;
 
 /**
- * Holds all the possible method calls for a client in this application and
+ * Holds all the possible services for a client in this application and
  * passes it down to the domain and repository layers.
  * 
  * @author Antonio
@@ -42,7 +42,7 @@ public class CustomerOrderService {
 	}
 
 	/**
-	 * Tries to find and get the <code>Customer</code> with the given id.
+	 * Tries to find and get the <code>Customer</code> with the given ID.
 	 *  
 	 * @param id The ID of the customer.
 	 * @return the <code>Customer</code> if found.
@@ -68,7 +68,7 @@ public class CustomerOrderService {
 	/**
 	 * Tries to add a new <code>Customer</code>.
 	 * 
-	 * @param newCustomer the new <code>Customer</code> to be added.
+	 * @param newCustomer The new <code>Customer</code> to be added.
 	 * @return the added <code>Customer</code>.
 	 */
 	public Customer addCustomer(Customer newCustomer) {
@@ -107,18 +107,38 @@ public class CustomerOrderService {
 		throw new IllegalTransactionException("Cannot delete a customer with orders that are in progress!");
 	}
 
+	/**
+	 * @return all the <code>Order</code>s stored in the database.
+	 */
 	public List<Order> getAllOrders(){
 		return orderRepo.findAll();
 	}
 
+	/**
+	 * @param id The ID of a <code>Customer</code>.
+	 * @return all the <code>Order</code>s of the customer.
+	 */
 	public List<Order> getAllOrdersForCustomer(Long id){
 		return orderRepo.findAllByCustomerId(id);
 	}
 
+	/**
+	 * @param id The ID of an <code>Order</code>.
+	 * @return the <code>Order</code>.
+	 */
 	public Order getOrderById(Long id) {
 		return findOrderById(id);
 	}
 
+	/**
+	 * Add a new <code>Order</code> for a <code>Customer</code>.
+	 * 
+	 * @param id The ID of the <code>Customer</code>.
+	 * @param status The status of the <code>Order</code>.
+	 * @param price The price of the <code>Order</code>.
+	 * @param description The <code>Order</code> description.
+	 * @return the created <code>Order</code>.
+	 */
 	public Order addOrderToCustomer(Long id, OrderStatus status, Double price, String description) {
 		Customer customer = findCustomerById(id);
 		Order order = new Order(status, price, description, customer);
@@ -126,12 +146,24 @@ public class CustomerOrderService {
 		return order;
 	}
 	
+	/**
+	 * Updates the status of an <code>Order</code>.
+	 * 
+	 * @param id The ID of the <code>Order</code>.
+	 * @param status The new <code>OrderStatus</code> to be updated to.
+	 * @return the updated <code>Order</code>.
+	 */
 	public Order updateOrderStatus(Long id, OrderStatus status) {
 		Order order = findOrderById(id);
 		order.setStatus(status);
 		return order;
 	}
 	
+	/**
+	 * Deletes an <code>Order</code> with the given ID.
+	 * 
+	 * @param id The ID of the <code>Order</code> to be deleted.
+	 */
 	public void deleteOrder(Long id) {
 		Order order = findOrderById(id);
 		if(order.getStatus() != OrderStatus.IN_PROGRESS) {

@@ -23,51 +23,69 @@ import org.springframework.web.bind.annotation.RestController;
 import se.kth.id1212.rest.application.CustomerOrderService;
 import se.kth.id1212.rest.domain.Customer;
 
+/**
+ * The REST API for the customers (<code>Customer</code>s). The REST API can list all the customers, retrieve specific customers
+ * with a given id or personal number, create new customers, update customer membership, and delete customers.
+ * 
+ * @author Antonio
+ *
+ */
 @RestController
 @Validated
 class CustomerController {
-	
+
 	@Autowired
 	private CustomerOrderService customerOrderService;
-	
+
 	@Autowired
 	private RepresentationAssembler representationAssembler;
-	
-	/*
-	@GetMapping("/customers")
-	CollectionModel<EntityModel<Customer>> getAllCustomers(){
-		List<EntityModel<Customer>> customers = customerOrderService.getAllCustomers()
-				.stream().map(customer -> {
-					return customerResourceAssembler.toModel(customer);
-				}).collect(Collectors.toList());
-		return new CollectionModel<>(customers, linkTo(methodOn(CustomerController.class)
-				.getAllCustomers()).withSelfRel());
-	}
-	*/
-	
+
+	/**
+	 * List all <code>Customers</code>s.
+	 * 
+	 * @return a <code>CollectionModel</code> with all the customers embedded.
+	 */
 	@GetMapping("/customers")
 	CollectionModel<Customer> getAllCustomers(){
 		List<Customer> customers = customerOrderService.getAllCustomers();
 		representationAssembler.addLinksToCustomers(customers);
-		
+
 		return new CollectionModel<Customer>(customers, linkTo(methodOn(CustomerController.class)
 				.getAllCustomers()).withSelfRel());
 	}
-	
+
+	/**
+	 * Retrieves a <code>Customer</code> with a specific id.
+	 * 
+	 * @param id The ID of the <code>Customer</code>.
+	 * @return the <code>Customer</code>.
+	 */
 	@GetMapping("/customers/{id}")
 	Customer getCustomer(@PathVariable Long id) {
 		Customer customer = customerOrderService.getCustomerById(id);
 		representationAssembler.addLinkToCustomer(customer);
 		return customer;
 	}
-	
+
+	/**
+	 * Retrieves a <code>Customer</code> with a personal number.
+	 * 
+	 * @param personalNumber The personal number of the <code>Customer</code>.
+	 * @return the <code>Customer</code>.
+	 */
 	@GetMapping("/customers/findByPersonalNumber")
 	Customer getCustomerByPersonalNumber(@RequestParam(name = "number", required = true) String personalNumber) {
 		Customer customer = customerOrderService.getCustomerByPersonalNumber(personalNumber);
 		representationAssembler.addLinkToCustomer(customer);
 		return customer;
 	}
-	
+
+	/**
+	 * Creates a new <code>Customer</code>.
+	 * 
+	 * @param newCustomer The new <code>Customer</code> to be created and stored.
+	 * @return the created <code>Customer</code>.
+	 */
 	@PostMapping("/customers")
 	@ResponseStatus(HttpStatus.CREATED)
 	Customer addCustomer(@RequestBody @Valid Customer newCustomer) {
@@ -75,7 +93,15 @@ class CustomerController {
 		representationAssembler.addLinkToCustomer(customer);
 		return customer;
 	}
-	
+
+	/**
+	 * Updates a <code>Customer</code>'s membership. The possible memberships can be seen at
+	 * {@link CustomerMembership}.
+	 * 
+	 * @param customerUpdateForm The update form to set the new membership.
+	 * @param id The ID of the <code>Customer</code>.
+	 * @return the updated <code>Customer</code>.
+	 */
 	@PutMapping("/customers/{id}")
 	Customer updateCustomer(@RequestBody @Valid CustomerUpdateForm customerUpdateForm, @PathVariable Long id) {
 		Customer customer = customerOrderService.updateCustomerMembership(id, customerUpdateForm.getMembership());
@@ -84,9 +110,10 @@ class CustomerController {
 	}
 
 	/**
-	 * Builds the response entity with no body.
-	 * @param id The id of a <code>Customer</code>.
-	 * @return HTTP 204 if successful.
+	 * Deletes an <code>Customer</code>.
+	 * 
+	 * @param id The ID of the <code>Customer</code>.
+	 * @return an empty <code>ResponseEntity</code> with HTTP 204 if successful.
 	 */
 	@DeleteMapping("/customers/{id}")
 	ResponseEntity<?> deleteCustomer(@PathVariable Long id) {

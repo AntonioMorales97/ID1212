@@ -10,7 +10,7 @@ package se.kth.id1212.rest.presentation.error;
 class ErrorResponse {
 	private String logRef;
 	private String message;
-	
+
 	/**
 	 * Creates an instance of <code>ErrorResponse</code>.
 	 * 
@@ -21,14 +21,14 @@ class ErrorResponse {
 		this.logRef = logRef;
 		this.message = message;
 	}
-	
+
 	/**
 	 * @return the error.
 	 */
 	public String getLogRef() {
 		return this.logRef;
 	}
-	
+
 	/**
 	 * @return the error message.
 	 */
