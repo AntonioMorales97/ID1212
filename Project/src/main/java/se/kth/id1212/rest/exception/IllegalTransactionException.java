@@ -1,7 +1,7 @@
 package se.kth.id1212.rest.exception;
 
 /**
- * Thrown whenever an illegal transaction is made in this applicaiton.
+ * Thrown whenever an illegal transaction is made in this application.
  * 
  * @author Antonio
  *

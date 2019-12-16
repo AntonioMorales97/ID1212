@@ -40,7 +40,7 @@ class DatabaseInitializer {
 			log.info("Inserting " + customerRepo.save(c4));
 			log.info("Inserting " + customerRepo.save(c5));
 			log.info("Inserting " + customerRepo.save(c6));
-			//log.info("Inserting " + orderRepo.save(o1));
+			//log.info("Inserting " + orderRepo.save(o1)); //saved through customer
 		};
 	}
 }

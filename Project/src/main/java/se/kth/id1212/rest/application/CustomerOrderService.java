@@ -166,7 +166,7 @@ public class CustomerOrderService {
 	 */
 	public void deleteOrder(Long id) {
 		Order order = findOrderById(id);
-		if(order.getStatus() != OrderStatus.IN_PROGRESS) {
+		if(order.isRemovable()) {
 			if(order.getCustomer().getOrders().remove(order))
 				return;
 			throw new RuntimeException("Ops, order could not be removed :("); //should never come here

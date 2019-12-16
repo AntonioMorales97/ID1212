@@ -11,7 +11,7 @@ public class OrderNotFoundException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates an instance of this exception whenever an order was not found.
+	 * Creates an instance of this exception whenever an <code>Order</code> was not found.
 	 * 
 	 * @param msg The message holding information why the exception was thrown.
 	 */

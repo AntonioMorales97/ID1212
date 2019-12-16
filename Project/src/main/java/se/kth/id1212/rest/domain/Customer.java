@@ -21,6 +21,7 @@ import javax.validation.constraints.PositiveOrZero;
 import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -115,6 +116,13 @@ public class Customer extends RepresentationModel<Customer> {
 		this.membership = membership.toUpperCase();
 	}
 	
+	/**
+	 * Checks if the <code>Customer</code> is removable or not, i.e does not have
+	 * any active <code>Order</code>s.
+	 * 
+	 * @return <code>true</code> if removable; <code>false</code> otherwise.
+	 */
+	@JsonIgnore
 	public boolean isRemovable() {
 		if(this.orders != null) {
 			for(Order order : this.orders) {
