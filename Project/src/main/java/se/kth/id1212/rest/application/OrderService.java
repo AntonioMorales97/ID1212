@@ -8,60 +8,46 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.kth.id1212.rest.application.exception.CustomerNotFoundException;
+import se.kth.id1212.rest.application.exception.IllegalTransactionException;
+import se.kth.id1212.rest.application.exception.OrderNotFoundException;
 import se.kth.id1212.rest.domain.Customer;
 import se.kth.id1212.rest.domain.Order;
 import se.kth.id1212.rest.enums.OrderStatus;
-import se.kth.id1212.rest.presentation.error.CustomerNotFoundException;
-import se.kth.id1212.rest.presentation.error.IllegalTransactionException;
-import se.kth.id1212.rest.presentation.error.OrderNotFoundException;
 import se.kth.id1212.rest.repository.CustomerRepository;
 import se.kth.id1212.rest.repository.OrderRepository;
 
+/**
+ * Implements <code>IOrderService</code> with all the services related to <code>Order</code>s.
+ * 
+ * @author Antonio
+ *
+ */
 @Service
 @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 public class OrderService implements IOrderService {
 
 	@Autowired
 	private OrderRepository orderRepo;
-	
+
 	@Autowired
 	private CustomerRepository customerRepo;
-	
-	/**
-	 * @return all the <code>Order</code>s stored in the database.
-	 */
+
 	@Override
 	public List<Order> getAllOrders(){
 		return orderRepo.findAll();
 	}
 
-	/**
-	 * @param id The ID of a <code>Customer</code>.
-	 * @return all the <code>Order</code>s of the customer.
-	 */
 	@Override
 	public List<Order> getAllOrdersForCustomer(Long id){
 		return orderRepo.findAllByCustomerId(id);
 	}
 
-	/**
-	 * @param id The ID of an <code>Order</code>.
-	 * @return the <code>Order</code>.
-	 */
 	@Override
 	public Order getOrderById(Long id) {
 		return findOrderById(id);
 	}
 
-	/**
-	 * Add a new <code>Order</code> for a <code>Customer</code>.
-	 * 
-	 * @param id The ID of the <code>Customer</code>.
-	 * @param status The status of the <code>Order</code>.
-	 * @param price The price of the <code>Order</code>.
-	 * @param description The <code>Order</code> description.
-	 * @return the created <code>Order</code>.
-	 */
 	@Override
 	public Order addOrderToCustomer(Long id, OrderStatus status, Double price, String description) {
 		Customer customer = findCustomerById(id);
@@ -72,13 +58,6 @@ public class OrderService implements IOrderService {
 		return order;
 	}
 
-	/**
-	 * Updates the status of an <code>Order</code>.
-	 * 
-	 * @param id The ID of the <code>Order</code>.
-	 * @param status The new <code>OrderStatus</code> to be updated to.
-	 * @return the updated <code>Order</code>.
-	 */
 	@Override
 	public Order updateOrderStatus(Long id, OrderStatus status) {
 		Order order = findOrderById(id);
@@ -86,11 +65,6 @@ public class OrderService implements IOrderService {
 		return order;
 	}
 
-	/**
-	 * Deletes an <code>Order</code> with the given ID.
-	 * 
-	 * @param id The ID of the <code>Order</code> to be deleted.
-	 */
 	@Override
 	public void deleteOrder(Long id) {
 		Order order = findOrderById(id);
@@ -101,7 +75,7 @@ public class OrderService implements IOrderService {
 		}
 		throw new IllegalTransactionException("Cannot delete an order that has status: " + order.getStatus());
 	}
-	
+
 	private Order findOrderById(Long id) {
 		Optional<Order> order = this.orderRepo.findById(id);
 		if(order.isPresent())

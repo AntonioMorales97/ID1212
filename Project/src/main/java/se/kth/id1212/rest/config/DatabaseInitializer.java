@@ -24,7 +24,7 @@ class DatabaseInitializer {
 
 	@Bean
 	CommandLineRunner initializeDatabase(CustomerRepository customerRepo, OrderRepository orderRepo) {
-		
+
 		Customer c1 = new Customer("John", "Doe", "8906131234", 30, "GOLD");
 		Customer c2 = new Customer("Jane", "Doe", "8910211223" ,30, "BRONZE");
 		Customer c3 = new Customer("Freddy", "Krueger", "6901243031", 50, "SILVER");

@@ -30,6 +30,7 @@ import lombok.Setter;
 import lombok.ToString;
 import se.kth.id1212.rest.enums.CustomerMembership;
 import se.kth.id1212.rest.enums.OrderStatus;
+import se.kth.id1212.rest.validation.ValidEmail;
 import se.kth.id1212.rest.validation.ValueOfEnum;
 
 /**
@@ -44,48 +45,51 @@ import se.kth.id1212.rest.validation.ValueOfEnum;
 @Entity
 public class Customer extends RepresentationModel<Customer> {
 	private static final String SEQ_NAME_KEY = "SEQ_NAME";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQ_NAME_KEY)
 	@SequenceGenerator(name = SEQ_NAME_KEY, sequenceName = "CUSTOMER_SEQUENCE")
 	private Long id;
-	
+
 	@Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "Only letters are allowed")
 	@NotNull(message = "{customer.firstName.missing}")
 	@NotBlank(message = "{customer.firstName.blank}")
 	private String firstName;
-	
+
 	@Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "Only letters are allowed")
 	@NotNull(message = "{customer.lastName.missing}")
 	@NotBlank(message = "{customer.lastName.blank}")
 	private String lastName;
-	
+
 	@NotBlank(message = "{customer.personalNumber.blank}")
 	@NotNull(message = "{customer.personalNumber.missing}")
 	@Pattern(regexp="[\\d]{10}", message = "Personal number must be 10 digits")
 	@Column(unique=true)
 	private String personalNumber;
-	
+
 	@NotNull(message = "{customer.age.missing}")
 	@PositiveOrZero(message = "Age must be zero or greater")
 	private Integer age;
-	
+
 	@Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "Only letters are allowed")
 	@NotNull(message = "{customer.membership.missing}")
 	@NotBlank(message = "{customer.membership.blank}")
 	@ValueOfEnum(enumClass = CustomerMembership.class, message = "Not supported customer membership")
 	@Setter(AccessLevel.NONE) //we need to manually convert to upper case
 	private String membership;
-	
-	@NotNull
+
+	@ValidEmail
+	@NotNull(message = "{customer.email.missing}")
+	@NotBlank(message = "{customer.email.blank}")
 	private String email;
-	
-	@NotNull
+
+	@NotNull(message = "{customer.password.missing}")
+	@NotBlank(message = "{customer.password.blank}")
 	private String password;
-	
+
 	@NotNull
 	private Boolean verified;
-	
+
 	@OneToMany(cascade = CascadeType.ALL,
 			fetch = FetchType.EAGER,
 			mappedBy = "customer",
@@ -94,12 +98,12 @@ public class Customer extends RepresentationModel<Customer> {
 	@ToString.Exclude
 	@JsonBackReference
 	private Set<Order> orders = new HashSet<>();
-	
+
 	/**
 	 * Required by JPA (don't use!)
 	 */
 	protected Customer() {}
-	
+
 	/**
 	 * Creates an instance of this class.
 	 * 
@@ -116,7 +120,7 @@ public class Customer extends RepresentationModel<Customer> {
 		this.membership = membership.toUpperCase();
 		this.verified = false;
 	}
-	
+
 	/**
 	 * Sets the membership with upper case.
 	 * 
@@ -125,7 +129,7 @@ public class Customer extends RepresentationModel<Customer> {
 	public void setMembership(String membership) {
 		this.membership = membership.toUpperCase();
 	}
-	
+
 	/**
 	 * Checks if the <code>Customer</code> is removable or not, i.e does not have
 	 * any active <code>Order</code>s.
@@ -142,7 +146,7 @@ public class Customer extends RepresentationModel<Customer> {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @return the <code>true</code> if the <code>Customer</code> is verified; <code>false</code> otherwise.
 	 */

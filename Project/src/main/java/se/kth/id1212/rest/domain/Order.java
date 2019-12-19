@@ -22,8 +22,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
+import se.kth.id1212.rest.application.exception.IllegalTransactionException;
 import se.kth.id1212.rest.enums.OrderStatus;
-import se.kth.id1212.rest.presentation.error.IllegalTransactionException;
 
 /**
  * Represents a <code>Customer</code>'s order. The <code>@Data</code> will create all the getters,
@@ -37,14 +37,14 @@ import se.kth.id1212.rest.presentation.error.IllegalTransactionException;
 @Entity
 @Table(name = "customer_order")
 public class Order extends RepresentationModel<Order> {
-	
+
 	private static final String SEQ_NAME_KEY = "SEQ_NAME";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQ_NAME_KEY)
 	@SequenceGenerator(name = SEQ_NAME_KEY, sequenceName = "ORDER_SEQUENCE")
 	private Long id;
-	
+
 	@NotNull(message = "{order.customer.missing}")
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
@@ -53,24 +53,24 @@ public class Order extends RepresentationModel<Order> {
 	//@JsonManagedReference
 	@JsonIgnoreProperties({"age", "firstName", "lastName"})
 	private Customer customer;
-	
+
 	@NotNull(message = "{order.status.missing}")
 	@Setter(AccessLevel.NONE)
 	private OrderStatus status;
-	
+
 	@NotNull(message = "{order.price.missing}")
 	@PositiveOrZero(message = "Price must be zero or greater")
 	private Double price;
-	
+
 	@NotNull(message = "{order.description.missing}")
 	@NotBlank(message = "{order.description.blank}")
 	private String description;
-	
+
 	/**
 	 * Required by JPA (don't use!)
 	 */
 	protected Order() {}
-	
+
 	/**
 	 * Creates an instance of this class without setting the <code>Customer</code>.
 	 * 
@@ -83,7 +83,7 @@ public class Order extends RepresentationModel<Order> {
 		this.price = price;
 		this.description = description;
 	}
-	
+
 	/**
 	 * Creates an instance of this class with the <code>Customer</code>.
 	 * 
@@ -98,7 +98,7 @@ public class Order extends RepresentationModel<Order> {
 		this.description = description;
 		this.customer = customer;
 	}
-	
+
 	/**
 	 * Updates the status of this order.
 	 * 
@@ -109,10 +109,10 @@ public class Order extends RepresentationModel<Order> {
 			throw new IllegalTransactionException("Cannot cancel an order with the order status being " + OrderStatus.COMPLETED);
 		if((status == OrderStatus.COMPLETED) && (this.status == OrderStatus.CANCELLED))
 			throw new IllegalTransactionException("Cannot complete an order with order status being " + OrderStatus.CANCELLED);
-		
+
 		this.status = status;
 	}
-	
+
 	/**
 	 * Checks if this order is removable or not, i.e is not active.
 	 * 
@@ -124,5 +124,5 @@ public class Order extends RepresentationModel<Order> {
 			return false;
 		return true;
 	}
-	
+
 }

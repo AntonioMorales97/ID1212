@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class RestApplication {
-	
+
 	/**
 	 * Starts the rest application.
 	 * 

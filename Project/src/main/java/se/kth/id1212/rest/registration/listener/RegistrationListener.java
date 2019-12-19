@@ -13,32 +13,38 @@ import se.kth.id1212.rest.application.ICustomerService;
 import se.kth.id1212.rest.domain.Customer;
 import se.kth.id1212.rest.registration.RegistrationCompleteEvent;
 
+/**
+ * An <code>ApplicationListener</code> to listen for <code>RegistrationCompleteEvent</code>s.
+ * 
+ * @author Antonio
+ *
+ */
 @Component
 public class RegistrationListener implements ApplicationListener<RegistrationCompleteEvent>{
 
 	@Autowired
 	private ICustomerService customerService;
-	
+
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Autowired
 	Environment env;
-	
-	
+
+
 	@Override
 	public void onApplicationEvent(RegistrationCompleteEvent event) {
 		this.sendConfirmEmail(event);
 	}
-	
+
 	private void sendConfirmEmail(RegistrationCompleteEvent event) {
 		Customer customer = event.getCustomer();
 		String token = UUID.randomUUID().toString();
 		customerService.createVerificationTokenForCustomer(customer, token);
-		
+
 		mailSender.send(buildEmailMessage(event, customer, token));
 	}
-	
+
 	private SimpleMailMessage buildEmailMessage(RegistrationCompleteEvent event, Customer customer, String token) {
 		String customerEmail = customer.getEmail();
 		String subject = "Email Confirmation";

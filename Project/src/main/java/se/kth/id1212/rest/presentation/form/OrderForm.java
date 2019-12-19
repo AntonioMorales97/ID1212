@@ -22,5 +22,4 @@ public class OrderForm {
 	@NotNull(message = "{order.description.missing}")
 	@NotBlank(message = "{order.description.blank}")
 	private String description;
-
 }

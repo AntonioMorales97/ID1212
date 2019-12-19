@@ -46,7 +46,7 @@ public class CustomerController {
 
 	@Autowired
 	private RepresentationAssembler representationAssembler;
-	
+
 	@Autowired
 	private ApplicationEventPublisher eventPublisher;
 
@@ -119,7 +119,7 @@ public class CustomerController {
 		representationAssembler.addLinkToCustomer(customer);
 		return customer;
 	}
-	
+
 	/**
 	 * Used to login a <code>Customer</code> by email and password.
 	 * OBS: Login is not implemented. One could insert an HttpOnly Cookie
@@ -132,11 +132,11 @@ public class CustomerController {
 	@PostMapping("/customers/login")
 	public Customer loginCustomer(@RequestBody @Valid CustomerLoginForm loginForm) {
 		Customer customer = customerOrderService.loginCustomer(loginForm.getEmail(),
-							loginForm.getPassword());
+				loginForm.getPassword());
 		representationAssembler.addLinkToCustomer(customer);
 		return customer;
 	}
-	
+
 	/**
 	 * Used to verify a <code>Customer</code> with the given token.
 	 * 

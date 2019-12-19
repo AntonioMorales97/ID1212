@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.presentation.error;
+package se.kth.id1212.rest.application.exception;
 
 /**
  * Thrown whenever an illegal transaction is made in this application.
@@ -7,7 +7,7 @@ package se.kth.id1212.rest.presentation.error;
  *
  */
 public class IllegalTransactionException extends RuntimeException{
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**

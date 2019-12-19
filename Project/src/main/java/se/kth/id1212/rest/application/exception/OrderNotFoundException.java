@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.presentation.error;
+package se.kth.id1212.rest.application.exception;
 
 /**
  * Thrown whenever an <code>Order</code> is not found.
