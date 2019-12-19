@@ -22,8 +22,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
-import se.kth.id1212.rest.exception.IllegalTransactionException;
-import se.kth.id1212.rest.util.OrderStatus;
+import se.kth.id1212.rest.enums.OrderStatus;
+import se.kth.id1212.rest.presentation.error.IllegalTransactionException;
 
 /**
  * Represents a <code>Customer</code>'s order. The <code>@Data</code> will create all the getters,

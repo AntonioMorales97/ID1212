@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.exception;
+package se.kth.id1212.rest.presentation.error;
 
 /**
  * Thrown whenever an illegal transaction is made in this application.

@@ -1,10 +1,10 @@
-package se.kth.id1212.rest.presentation.cust;
+package se.kth.id1212.rest.presentation.form;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import se.kth.id1212.rest.util.CustomerMembership;
-import se.kth.id1212.rest.util.ValueOfEnum;
+import se.kth.id1212.rest.enums.CustomerMembership;
+import se.kth.id1212.rest.validation.ValueOfEnum;
 
 /**
  * Represents a form to update <code>Customer</code>s. For now, only the membership of the <code>Customer</code>

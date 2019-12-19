@@ -13,10 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import se.kth.id1212.rest.exception.CustomerNotFoundException;
-import se.kth.id1212.rest.exception.OrderNotFoundException;
-import se.kth.id1212.rest.exception.IllegalTransactionException;
-
 /**
  * Handles all the exceptions thrown in this application.
  * 

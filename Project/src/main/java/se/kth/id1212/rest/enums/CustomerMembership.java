@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.util;
+package se.kth.id1212.rest.enums;
 
 /**
  * The different types of membership supported in this application.

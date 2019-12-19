@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.presentation.cust;
+package se.kth.id1212.rest.presentation.form;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import lombok.Data;
  *
  */
 @Data
-class OrderForm {
+public class OrderForm {
 
 	@NotNull(message = "{order.price.missing}")
 	@PositiveOrZero(message = "Price must be zero or greater")

@@ -19,4 +19,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>{
 	 * @return a <code>Customer</code> with the given personal number if found; otherwise <code>null</code> is returned.
 	 */
 	public Customer findByPersonalNumber(String personalNumber);
+	
+	public Customer findByEmail(String email);
 }

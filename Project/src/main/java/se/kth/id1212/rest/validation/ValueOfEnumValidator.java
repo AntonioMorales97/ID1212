@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.util;
+package se.kth.id1212.rest.validation;
 
 import java.util.List;
 import java.util.stream.Collectors;

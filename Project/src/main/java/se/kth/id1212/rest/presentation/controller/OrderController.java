@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.presentation.cust;
+package se.kth.id1212.rest.presentation.controller;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import se.kth.id1212.rest.application.CustomerOrderService;
+import se.kth.id1212.rest.application.IOrderService;
 import se.kth.id1212.rest.domain.Order;
-import se.kth.id1212.rest.util.OrderStatus;
+import se.kth.id1212.rest.enums.OrderStatus;
+import se.kth.id1212.rest.presentation.form.OrderForm;
+import se.kth.id1212.rest.presentation.util.RepresentationAssembler;
 
 /**
  * The REST API for the customer orders. The REST API can list all orders, retrieve specific orders,
@@ -35,10 +37,10 @@ import se.kth.id1212.rest.util.OrderStatus;
  */
 @RestController
 @Validated
-class OrderController {
+public class OrderController {
 
 	@Autowired
-	private CustomerOrderService customerOrderService;
+	private IOrderService orderService;
 
 	@Autowired
 	private RepresentationAssembler representationAssembler;
@@ -49,8 +51,8 @@ class OrderController {
 	 * @return a <code>CollectionModel</code> with all the orders embedded.
 	 */
 	@GetMapping("/customers/orders")
-	CollectionModel<Order> getAllOrders(){
-		List<Order> orders = customerOrderService.getAllOrders();
+	public CollectionModel<Order> getAllOrders(){
+		List<Order> orders = orderService.getAllOrders();
 		representationAssembler.addLinksToOrders(orders);
 		return new CollectionModel<Order>(orders, linkTo(methodOn(OrderController.class)
 				.getAllOrders()).withSelfRel());
@@ -63,8 +65,8 @@ class OrderController {
 	 * @return the <code>Order</code>.
 	 */
 	@GetMapping("/customers/orders/{id}")
-	Order getOrder(@PathVariable Long id) {
-		Order order = customerOrderService.getOrderById(id);
+	public Order getOrder(@PathVariable Long id) {
+		Order order = orderService.getOrderById(id);
 		representationAssembler.addLinksToOrder(order);
 		return order;
 	}
@@ -76,8 +78,8 @@ class OrderController {
 	 * @return a <code>CollectionModel</code> with all the orders of the <code>Customer</code>.
 	 */
 	@GetMapping("/customers/{customerId}/orders")
-	CollectionModel<Order> getOrdersForCustomer(@PathVariable Long customerId){
-		List<Order> orders = customerOrderService.getAllOrdersForCustomer(customerId);
+	public CollectionModel<Order> getOrdersForCustomer(@PathVariable Long customerId){
+		List<Order> orders = orderService.getAllOrdersForCustomer(customerId);
 		representationAssembler.addLinksToOrders(orders);	
 		return new CollectionModel<Order>(orders, linkTo(methodOn(OrderController.class)
 				.getAllOrders()).withSelfRel());
@@ -92,8 +94,8 @@ class OrderController {
 	 */
 	@PostMapping("/customers/{customerId}/orders")
 	@ResponseStatus(HttpStatus.CREATED)
-	Order addOrderToCustomer(@PathVariable Long customerId, @RequestBody @Valid OrderForm orderForm) {
-		Order order = customerOrderService.addOrderToCustomer(customerId, OrderStatus.IN_PROGRESS, orderForm.getPrice(),
+	public Order addOrderToCustomer(@PathVariable Long customerId, @RequestBody @Valid OrderForm orderForm) {
+		Order order = orderService.addOrderToCustomer(customerId, OrderStatus.IN_PROGRESS, orderForm.getPrice(),
 				orderForm.getDescription());
 		representationAssembler.addLinksToOrder(order);
 		return order;
@@ -106,8 +108,8 @@ class OrderController {
 	 * @return the updated <code>Order</code>.
 	 */
 	@PutMapping("/customers/orders/{orderId}/complete")
-	Order completeOrder(@PathVariable Long orderId) {
-		Order order = customerOrderService.updateOrderStatus(orderId, OrderStatus.COMPLETED);
+	public Order completeOrder(@PathVariable Long orderId) {
+		Order order = orderService.updateOrderStatus(orderId, OrderStatus.COMPLETED);
 		representationAssembler.addLinksToOrder(order);
 		return order;
 	}
@@ -119,8 +121,8 @@ class OrderController {
 	 * @return the updated <code>Order</code>.
 	 */
 	@PutMapping("/customers/orders/{orderId}/cancel")
-	Order cancelOrder(@PathVariable Long orderId) {
-		Order order = customerOrderService.updateOrderStatus(orderId, OrderStatus.CANCELLED);
+	public Order cancelOrder(@PathVariable Long orderId) {
+		Order order = orderService.updateOrderStatus(orderId, OrderStatus.CANCELLED);
 		representationAssembler.addLinksToOrder(order);
 		return order;
 	}
@@ -132,8 +134,8 @@ class OrderController {
 	 * @return an empty <code>ResponseEntity</code> with HTTP 204 if successful.
 	 */
 	@DeleteMapping("/customers/orders/{orderId}/delete")
-	ResponseEntity<?> deleteOrder(@PathVariable Long orderId) {
-		customerOrderService.deleteOrder(orderId);
+	public ResponseEntity<?> deleteOrder(@PathVariable Long orderId) {
+		orderService.deleteOrder(orderId);
 		return ResponseEntity.noContent().build();
 	}
 

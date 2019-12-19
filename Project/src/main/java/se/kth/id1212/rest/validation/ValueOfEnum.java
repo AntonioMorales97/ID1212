@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.util;
+package se.kth.id1212.rest.validation;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;

@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.presentation.cust;
+package se.kth.id1212.rest.presentation.util;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 
 import se.kth.id1212.rest.domain.Customer;
 import se.kth.id1212.rest.domain.Order;
-import se.kth.id1212.rest.util.OrderStatus;
+import se.kth.id1212.rest.enums.OrderStatus;
+import se.kth.id1212.rest.presentation.controller.CustomerController;
+import se.kth.id1212.rest.presentation.controller.OrderController;
 
 /**
  * A helper class that uses Spring HATEOAS and helps adding
@@ -19,14 +21,14 @@ import se.kth.id1212.rest.util.OrderStatus;
  *
  */
 @Component
-class RepresentationAssembler {
+public class RepresentationAssembler {
 
 	/**
 	 * Add links to all the given <code>Order</code>s.
 	 * 
 	 * @param orders A <code>List</code> containing the <code>Order</code>s.
 	 */
-	void addLinksToOrders(List<Order> orders) {
+	public void addLinksToOrders(List<Order> orders) {
 		orders.forEach(order -> addLinkToOneOrder(order));
 	}
 
@@ -35,7 +37,7 @@ class RepresentationAssembler {
 	 * 
 	 * @param order The <code>Order</code>.
 	 */
-	void addLinksToOrder(Order order) {
+	public void addLinksToOrder(Order order) {
 		addLinkToOneOrder(order);
 	}
 
@@ -44,7 +46,7 @@ class RepresentationAssembler {
 	 * 
 	 * @param customers A <code>List</code> containing the <code>Customer</code>s.
 	 */
-	void addLinksToCustomers(List<Customer> customers){
+	public void addLinksToCustomers(List<Customer> customers){
 		customers.forEach(customer -> addLinkToOneCustomer(customer));
 	}
 
@@ -53,7 +55,7 @@ class RepresentationAssembler {
 	 * 
 	 * @param customer The <code>Customer</code>.
 	 */
-	void addLinkToCustomer(Customer customer) {
+	public void addLinkToCustomer(Customer customer) {
 		addLinkToOneCustomer(customer);
 	}
 

@@ -1,10 +1,10 @@
-package se.kth.id1212.rest.presentation.cust;
+package se.kth.id1212.rest.presentation.form;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import se.kth.id1212.rest.util.OrderStatus;
-import se.kth.id1212.rest.util.ValueOfEnum;
+import se.kth.id1212.rest.enums.OrderStatus;
+import se.kth.id1212.rest.validation.ValueOfEnum;
 
 /**
  * Represents an update form to update an <code>Order</code>.

@@ -28,9 +28,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
-import se.kth.id1212.rest.util.CustomerMembership;
-import se.kth.id1212.rest.util.OrderStatus;
-import se.kth.id1212.rest.util.ValueOfEnum;
+import se.kth.id1212.rest.enums.CustomerMembership;
+import se.kth.id1212.rest.enums.OrderStatus;
+import se.kth.id1212.rest.validation.ValueOfEnum;
 
 /**
  * Represents a customer. The <code>@Data</code> will create all the getters,
@@ -77,6 +77,15 @@ public class Customer extends RepresentationModel<Customer> {
 	@Setter(AccessLevel.NONE) //we need to manually convert to upper case
 	private String membership;
 	
+	@NotNull
+	private String email;
+	
+	@NotNull
+	private String password;
+	
+	@NotNull
+	private Boolean verified;
+	
 	@OneToMany(cascade = CascadeType.ALL,
 			fetch = FetchType.EAGER,
 			mappedBy = "customer",
@@ -105,6 +114,7 @@ public class Customer extends RepresentationModel<Customer> {
 		this.personalNumber = personalNumber;
 		this.age = age;
 		this.membership = membership.toUpperCase();
+		this.verified = false;
 	}
 	
 	/**
@@ -131,5 +141,12 @@ public class Customer extends RepresentationModel<Customer> {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * @return the <code>true</code> if the <code>Customer</code> is verified; <code>false</code> otherwise.
+	 */
+	public boolean isVerified() {
+		return this.verified;
 	}
 }
