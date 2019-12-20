@@ -59,15 +59,19 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public Order updateOrderStatus(Long id, OrderStatus status) {
+	public Order updateOrderStatus(Customer customer, Long id, OrderStatus status) {
 		Order order = findOrderById(id);
+		if(!order.getCustomer().equals(customer))
+			throw new IllegalTransactionException("Cannot update another customer's order status!");
 		order.setStatus(status);
 		return order;
 	}
 
 	@Override
-	public void deleteOrder(Long id) {
+	public void deleteOrder(Customer customer, Long id) {
 		Order order = findOrderById(id);
+		if(!order.getCustomer().equals(customer))
+			throw new IllegalTransactionException("Cannot delete another customer's order!");
 		if(order.isRemovable()) {
 			if(order.getCustomer().getOrders().remove(order))
 				return;

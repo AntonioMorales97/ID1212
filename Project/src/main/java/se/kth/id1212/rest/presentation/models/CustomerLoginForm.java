@@ -1,4 +1,4 @@
-package se.kth.id1212.rest.presentation.form;
+package se.kth.id1212.rest.presentation.models;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

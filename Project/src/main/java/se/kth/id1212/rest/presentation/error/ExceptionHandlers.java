@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import org.springframework.security.authentication.BadCredentialsException;
+
 import se.kth.id1212.rest.application.exception.CustomerNotFoundException;
 import se.kth.id1212.rest.application.exception.IllegalTransactionException;
 import se.kth.id1212.rest.application.exception.InvalidCredentialsException;
@@ -62,9 +64,9 @@ class ExceptionHandlers {
 	 * @param exc The exception with the message.
 	 * @return the exception message.
 	 */
-	@ExceptionHandler(InvalidCredentialsException.class)
+	@ExceptionHandler({InvalidCredentialsException.class, BadCredentialsException.class})
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	ErrorResponse invalidCredentialsExceptionHandler(InvalidCredentialsException exc) {
+	ErrorResponse invalidCredentialsExceptionHandler(Exception exc) {
 		return new ErrorResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase(), exc.getMessage());
 	}
 
@@ -155,7 +157,7 @@ class ExceptionHandlers {
 		return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), METHOD_ARGUMENT_TYPE_MISMATCH
 				+ ", expected: " + exc.getRequiredType().getSimpleName());
 	}
-	
+
 	/**
 	 * Handler for bad http messages received.
 	 * 

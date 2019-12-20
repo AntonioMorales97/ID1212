@@ -63,7 +63,7 @@ public class RepresentationAssembler {
 		customer.add(linkTo(methodOn(CustomerController.class).getCustomer(customer.getId())).withSelfRel());
 		customer.add(linkTo(methodOn(CustomerController.class).getAllCustomers()).withRel("customers"));
 		if(customer.getOrders().size() > 0) {
-			customer.add(linkTo(methodOn(OrderController.class).getOrdersForCustomer(customer.getId())).withRel("orders"));
+			customer.add(linkTo(methodOn(OrderController.class).getOrdersForCustomer(null)).withRel("orders"));
 		}
 	}
 
@@ -72,12 +72,12 @@ public class RepresentationAssembler {
 		order.add(linkTo(methodOn(CustomerController.class).getCustomer(order.getCustomer().getId())).withRel("customer"));
 		order.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("orders"));
 		if(order.getStatus() == OrderStatus.IN_PROGRESS) {
-			order.add(linkTo(methodOn(OrderController.class).completeOrder(order.getId())).withRel("complete"));
-			order.add(linkTo(methodOn(OrderController.class).cancelOrder(order.getId())).withRel("cancel"));
+			order.add(linkTo(methodOn(OrderController.class).completeOrder(null, order.getId())).withRel("complete"));
+			order.add(linkTo(methodOn(OrderController.class).cancelOrder(null, order.getId())).withRel("cancel"));
 		}
 
 		if(order.getStatus() == OrderStatus.CANCELLED || order.getStatus() == OrderStatus.COMPLETED) {
-			order.add(linkTo(methodOn(OrderController.class).deleteOrder(order.getId())).withRel("delete"));
+			order.add(linkTo(methodOn(OrderController.class).deleteOrder(null, order.getId())).withRel("delete"));
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class CustomerService implements ICustomerService{
 	@Autowired
 	private VerificationTokenRepository verificationTokenRepo;
 
-	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(13);
 
 	@Override
 	public List<Customer> getAllCustomers(){

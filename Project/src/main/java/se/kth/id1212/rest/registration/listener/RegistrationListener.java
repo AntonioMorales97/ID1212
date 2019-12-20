@@ -14,7 +14,8 @@ import se.kth.id1212.rest.domain.Customer;
 import se.kth.id1212.rest.registration.RegistrationCompleteEvent;
 
 /**
- * An <code>ApplicationListener</code> to listen for <code>RegistrationCompleteEvent</code>s.
+ * An <code>ApplicationListener</code> to listen for <code>RegistrationCompleteEvent</code>s. When
+ * a registration has completed an email is sent for confirmation.
  * 
  * @author Antonio
  *

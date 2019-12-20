@@ -48,8 +48,6 @@ public class CustomerDTO {
 	private String membership;
 
 	@ValidEmail
-	@NotNull(message = "{customerDto.email.missing}")
-	@NotBlank(message = "{customerDto.email.blank}")
 	private String email;
 
 	@NotNull(message = "{customerDto.password.missing}")

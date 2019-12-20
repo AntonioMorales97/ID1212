@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -44,11 +43,9 @@ import se.kth.id1212.rest.validation.ValueOfEnum;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 public class Customer extends RepresentationModel<Customer> {
-	private static final String SEQ_NAME_KEY = "SEQ_NAME";
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQ_NAME_KEY)
-	@SequenceGenerator(name = SEQ_NAME_KEY, sequenceName = "CUSTOMER_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@Pattern(regexp = "^[\\p{L}\\p{M}*]*$", message = "Only letters are allowed")

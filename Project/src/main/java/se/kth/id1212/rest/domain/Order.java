@@ -6,7 +6,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -38,11 +37,8 @@ import se.kth.id1212.rest.enums.OrderStatus;
 @Table(name = "customer_order")
 public class Order extends RepresentationModel<Order> {
 
-	private static final String SEQ_NAME_KEY = "SEQ_NAME";
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQ_NAME_KEY)
-	@SequenceGenerator(name = SEQ_NAME_KEY, sequenceName = "ORDER_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@NotNull(message = "{order.customer.missing}")
@@ -51,7 +47,7 @@ public class Order extends RepresentationModel<Order> {
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	//@JsonManagedReference
-	@JsonIgnoreProperties({"age", "firstName", "lastName"})
+	@JsonIgnoreProperties({"age", "firstName", "lastName", "password"})
 	private Customer customer;
 
 	@NotNull(message = "{order.status.missing}")

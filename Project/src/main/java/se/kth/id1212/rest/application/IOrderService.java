@@ -2,6 +2,7 @@ package se.kth.id1212.rest.application;
 
 import java.util.List;
 
+import se.kth.id1212.rest.domain.Customer;
 import se.kth.id1212.rest.domain.Order;
 import se.kth.id1212.rest.enums.OrderStatus;
 
@@ -44,16 +45,18 @@ public interface IOrderService {
 	/**
 	 * Updates the status of an <code>Order</code>.
 	 * 
+	 * @param customer The <code>Customer</code> of the order.
 	 * @param id The ID of the <code>Order</code>.
 	 * @param status The new <code>OrderStatus</code> to be updated to.
 	 * @return the updated <code>Order</code>.
 	 */
-	public Order updateOrderStatus(Long id, OrderStatus status);
+	public Order updateOrderStatus(Customer customer, Long id, OrderStatus status);
 
 	/**
 	 * Deletes an <code>Order</code> with the given ID.
 	 * 
+	 * @param customer The <code>Customer</code> of the order to be deleted.
 	 * @param id The ID of the <code>Order</code> to be deleted.
 	 */
-	public void deleteOrder(Long id);
+	public void deleteOrder(Customer customer, Long id);
 }

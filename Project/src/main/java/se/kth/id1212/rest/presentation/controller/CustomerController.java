@@ -9,6 +9,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,10 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 import se.kth.id1212.rest.application.ICustomerService;
 import se.kth.id1212.rest.domain.Customer;
 import se.kth.id1212.rest.presentation.dto.CustomerDTO;
-import se.kth.id1212.rest.presentation.form.CustomerLoginForm;
-import se.kth.id1212.rest.presentation.form.CustomerUpdateForm;
+import se.kth.id1212.rest.presentation.models.CustomerUpdateForm;
 import se.kth.id1212.rest.presentation.util.RepresentationAssembler;
 import se.kth.id1212.rest.registration.RegistrationCompleteEvent;
+import se.kth.id1212.rest.security.MyUserPrincipal;
 
 /**
  * The REST API for the customers (<code>Customer</code>s). The REST API can list all the customers, retrieve specific customers
@@ -51,7 +52,7 @@ public class CustomerController {
 	private ApplicationEventPublisher eventPublisher;
 
 	/**
-	 * List all <code>Customers</code>s.
+	 * List all <code>Customers</code>s. No authentication required.
 	 * 
 	 * @return a <code>CollectionModel</code> with all the customers embedded.
 	 */
@@ -65,12 +66,12 @@ public class CustomerController {
 	}
 
 	/**
-	 * Retrieves a <code>Customer</code> with a specific id.
+	 * Retrieves a <code>Customer</code> with a specific id. No authentication required.
 	 * 
 	 * @param id The ID of the <code>Customer</code>.
 	 * @return the <code>Customer</code>.
 	 */
-	@GetMapping("/customers/{id}")
+	@GetMapping("/customers/customer/{id}")
 	public Customer getCustomer(@PathVariable Long id) {
 		Customer customer = customerOrderService.getCustomerById(id);
 		representationAssembler.addLinkToCustomer(customer);
@@ -78,12 +79,12 @@ public class CustomerController {
 	}
 
 	/**
-	 * Retrieves a <code>Customer</code> with a personal number.
+	 * Retrieves a <code>Customer</code> with a personal number. No authentication required.
 	 * 
 	 * @param personalNumber The personal number of the <code>Customer</code>.
 	 * @return the <code>Customer</code>.
 	 */
-	@GetMapping("/customers/findByPersonalNumber")
+	@GetMapping("/customer/findByPersonalNumber")
 	public Customer getCustomerByPersonalNumber(@RequestParam(name = "number", required = true) String personalNumber) {
 		Customer customer = customerOrderService.getCustomerByPersonalNumber(personalNumber);
 		representationAssembler.addLinkToCustomer(customer);
@@ -93,10 +94,10 @@ public class CustomerController {
 	/**
 	 * Creates a new <code>Customer</code>.
 	 * 
-	 * @param newCustomer The new <code>Customer</code> to be created and stored.
+	 * @param newCustomer The new <code>Customer</code> to be created and stored. No authentication required.
 	 * @return the created <code>Customer</code>.
 	 */
-	@PostMapping("/customers")
+	@PostMapping("/customer/register")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Customer addCustomer(@RequestBody @Valid CustomerDTO customerDto, HttpServletRequest request) {
 		Customer customer = customerOrderService.addCustomer(customerDto);
@@ -107,13 +108,13 @@ public class CustomerController {
 
 	/**
 	 * Updates a <code>Customer</code>'s membership. The possible memberships can be seen at
-	 * {@link CustomerMembership}.
+	 * {@link CustomerMembership}. No authentication required.
 	 * 
 	 * @param customerUpdateForm The update form to set the new membership.
 	 * @param id The ID of the <code>Customer</code>.
 	 * @return the updated <code>Customer</code>.
 	 */
-	@PutMapping("/customers/{id}")
+	@PutMapping("/customer/update")
 	public Customer updateCustomer(@RequestBody @Valid CustomerUpdateForm customerUpdateForm, @PathVariable Long id) {
 		Customer customer = customerOrderService.updateCustomerMembership(id, customerUpdateForm.getMembership());
 		representationAssembler.addLinkToCustomer(customer);
@@ -121,29 +122,12 @@ public class CustomerController {
 	}
 
 	/**
-	 * Used to login a <code>Customer</code> by email and password.
-	 * OBS: Login is not implemented. One could insert an HttpOnly Cookie
-	 * with JWT token to authenticate a customer. For simplicity, login is only
-	 * simulated.
-	 * 
-	 * @param confirmForm A <code>CustomerLoginForm</code> holding the email and password.
-	 * @return the verified/confirmed/logged in <code>Customer</code>.
-	 */
-	@PostMapping("/customers/login")
-	public Customer loginCustomer(@RequestBody @Valid CustomerLoginForm loginForm) {
-		Customer customer = customerOrderService.loginCustomer(loginForm.getEmail(),
-				loginForm.getPassword());
-		representationAssembler.addLinkToCustomer(customer);
-		return customer;
-	}
-
-	/**
-	 * Used to verify a <code>Customer</code> with the given token.
+	 * Used to verify a <code>Customer</code> with the given token. No authentication required.
 	 * 
 	 * @param token The token. See {@link VerificationToken}.
 	 * @return the verified/confirmed <code>Customer</code>.
 	 */
-	@GetMapping("/customers/confirm")
+	@GetMapping("/customer/confirm")
 	public Customer confirmEmailWithToken(@RequestParam(name = "token", required = true) String token) {
 		Customer customer = customerOrderService.confirmCustomerEmailWithVerificationToken(token);
 		representationAssembler.addLinkToCustomer(customer);
@@ -151,14 +135,14 @@ public class CustomerController {
 	}
 
 	/**
-	 * Deletes an <code>Customer</code>.
+	 * Deletes an <code>Customer</code>. Authentication required.
 	 * 
 	 * @param id The ID of the <code>Customer</code>.
 	 * @return an empty <code>ResponseEntity</code> with HTTP 204 if successful.
 	 */
-	@DeleteMapping("/customers/{id}")
-	public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
-		customerOrderService.deleteCustomer(id);
+	@DeleteMapping("/customer/delete")
+	public ResponseEntity<?> deleteCustomer(@AuthenticationPrincipal MyUserPrincipal principal) {
+		customerOrderService.deleteCustomer(principal.getCustomerId());
 		return ResponseEntity.noContent().build();
 	}
 

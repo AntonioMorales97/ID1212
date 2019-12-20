@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
@@ -22,13 +21,11 @@ import lombok.Data;
 @Entity
 public class VerificationToken {
 
-	private static final String SEQ_NAME_KEY = "SEQ_NAME";
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQ_NAME_KEY)
-	@SequenceGenerator(name = SEQ_NAME_KEY, sequenceName = "VERIFICATION_TOKEN_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@NotNull
 	private String token;
 
 	@OneToOne(targetEntity = Customer.class, fetch = FetchType.EAGER)
