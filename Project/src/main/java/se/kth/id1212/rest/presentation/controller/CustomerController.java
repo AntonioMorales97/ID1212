@@ -114,7 +114,7 @@ public class CustomerController {
 	 * @param id The ID of the <code>Customer</code>.
 	 * @return the updated <code>Customer</code>.
 	 */
-	@PutMapping("/customer/update")
+	@PutMapping("/customer/{id}/update")
 	public Customer updateCustomer(@RequestBody @Valid CustomerUpdateForm customerUpdateForm, @PathVariable Long id) {
 		Customer customer = customerOrderService.updateCustomerMembership(id, customerUpdateForm.getMembership());
 		representationAssembler.addLinkToCustomer(customer);

@@ -49,7 +49,7 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
 	private SimpleMailMessage buildEmailMessage(RegistrationCompleteEvent event, Customer customer, String token) {
 		String customerEmail = customer.getEmail();
 		String subject = "Email Confirmation";
-		String confirmUrl = event.getUrl() + "/customers/confirm?token=" + token;
+		String confirmUrl = event.getUrl() + "/customer/confirm?token=" + token;
 		String message = "Hello customer\n\nYou have been added. Please confirm by following the url :)";
 		SimpleMailMessage email = new SimpleMailMessage();
 		email.setTo(customerEmail);

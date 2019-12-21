@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable()
 		.authorizeRequests().antMatchers("/authenticate", "/customers", "/customers/customer/*", "/customer/findByPersonalNumber"
-				, "/customer/register","/customer/update", "/login","/customer/confirm"
+				, "/customer/register","/customer/*/update", "/login","/customer/confirm*"
 				, "/orders", "/order/*", "/h2-console/**").permitAll()
 		.anyRequest().authenticated()
 		.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
