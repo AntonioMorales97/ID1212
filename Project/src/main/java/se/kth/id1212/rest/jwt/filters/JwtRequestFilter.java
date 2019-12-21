@@ -19,7 +19,7 @@ import se.kth.id1212.rest.jwt.JwtUtil;
 import se.kth.id1212.rest.security.MyUserDetailsService;
 
 /**
- * A filter used in this application's filter chain to verify JSON Web Tokens in the requests.
+ * A filter used in this application's security filter chain to verify JSON Web Tokens in the requests.
  * 
  * @author Antonio
  *
@@ -29,7 +29,6 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 
 	private final String AUTH_HEADER = "Authorization";
 	private final String BEARER_START  = "Bearer ";
-
 
 	@Autowired
 	private MyUserDetailsService userDetailssService;
